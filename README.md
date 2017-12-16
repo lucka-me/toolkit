@@ -6,4 +6,4 @@ A collection of tools made by Lucka.
   * [服饰列表生成器](/52Poké Wiki/Cloth Table Generator/)
 
 ## Licence
-All the tools are [licenced under MIT](/LICENSE).
+All the tools are [licensed under MIT](/LICENSE).
