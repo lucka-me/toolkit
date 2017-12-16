@@ -1,2 +1,2 @@
-# toolbox
-Collection of tools made by Lucka.
+# Lucka's Toolbox
+A collection of tools made by Lucka.
