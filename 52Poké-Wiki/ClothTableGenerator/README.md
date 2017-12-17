@@ -25,5 +25,23 @@
 ### Manual Operation
 请在源代码中搜索 `# MARK: - Manual Operation`。
 
+## Changelog
+### [0.1.1] - 2017-12-17
+#### Added
+- 运行计时器
+- 源文件错误处理： `GI` -> `Gi`
+- 图片裁切尺寸注释
+- 图片尺寸的手动修改标记
+- 本 Changelog
+
+#### Changed
+- 运行提示中添加图片尺寸的注释
+
+#### Fixed
+- 显示文本修正
+
+### [0.1] - 2017-12-17
+- 首个基础功能完整的版本
+
 ## Licence
 本工具基于 [MIT 协议](../../LICENSE)。

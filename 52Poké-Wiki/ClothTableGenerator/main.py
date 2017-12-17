@@ -4,12 +4,13 @@
 """
 神奇寶貝百科服飾列表生成器
 Author:     Lucka
-Version:    0.1
+Version:    0.1.1
 Licence:    MIT
 
 """
 
 # 庫
+import time
 import urllib.request
 from wand.image import Image
 
@@ -74,6 +75,14 @@ def getImg(imgSN, typeSN, colorSN):
     # 裁切圖片
     # 目前本部分尺寸需要手動設置
     # MARK: - Manual Operation
+    # 上衣:   96x96+(x)+50
+    # 褲裙:   96x96+(x)+105
+    # 襪子:   96x48+(x)+182
+    # 鞋子:   96x48+(x)+182
+    # 包包:   96x96+(x)+50
+    # 帽子:   64x64+(x)+8
+    # 眼鏡:   64x64+(x)+8
+    # 髮飾:   64x64+(x)+8
     print("正在裁切圖片⋯")
     with Image(filename = fileName) as image:
         sizeX = 96
@@ -114,6 +123,10 @@ def getColumn(typeSN, colorSN,
                        typeListEN[typeSN]))
 
     # 圖樣列
+    # MARK: - Manual Operation
+    # 請確定圖片寬度
+    # 上衣、褲裙、襪子、鞋子、包包:   96px
+    # 帽子、眼鏡、髮飾:             64px
     if colorSN == -1:
         color = ""
     else:
@@ -161,10 +174,14 @@ def getColumn(typeSN, colorSN,
 # 主程序
 print(__doc__)
 print("請在程序代碼中確認下列基本參數:")
-print("  * 性別、裁切尺寸")
+print("  * 性別、裁切尺寸、圖片寬度")
+print("請搜索 # MARK: - Manual Operation")
 answer = input("是否繼續 (Y/N): ")
 if answer != "y" and answer != "Y":
     exit()
+
+# 計時器
+startTime = time.time()
 
 # 基本信息，需手動設置
 # MARK: - Manual Operation
@@ -198,6 +215,7 @@ sourceString = sourceString.replace("</td></tr>", "\n")
 sourceString = sourceString.replace("Grey", "Gray")
 sourceString = sourceString.replace("\nNavy\n", "\nNavy Blue\n")
 sourceString = sourceString.replace("Hau'oli", "Hau’oli")
+sourceString = sourceString.replace(" GI ", " Gi ")
 
 targetFile = open("list.txt", "w")
 targetFile.write(sourceString)
@@ -264,7 +282,7 @@ while True:
     if typeSN == -1:
         print("警告: 未找到對應服飾，原文: {0}".format(clothType))
     else:
-        print("服飾種類:\t{0} - > {1}".format(clothType, typeListCH[typeSN]))
+        print("服飾種類:\t{0} -> {1}".format(clothType, typeListCH[typeSN]))
 
     line = listFile.readline()
     color = line.replace("\n", "")
@@ -330,3 +348,4 @@ if len(errorList) > 0:
     print("未成功處理{0}個服飾，序號如下:".format(len(errorList)))
     for scanner in errorList:
         print("  {0}".format(scanner))
+print("運行耗時: {0:.2f}秒。".format(time.time() - startTime))
