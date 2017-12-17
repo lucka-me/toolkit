@@ -22,10 +22,23 @@
 | location_ch.txt | 地点名称中文文本              |
 | location_en.txt | 地点名称中文文本              |
 
-### Manual Operation
-请在源代码中搜索 `# MARK: - Manual Operation`。
-
 ## Changelog
+### [0.2.0] - 2017-12-18
+#### Added
+- 处理前的参数设置，包括性别、服饰类型
+- 根据参数自动设置变量
+- 选择是否下载和处理图片
+- 表格底栏，包括数量和价格统计
+
+#### Changed
+- 表头背景色，浅色 -> 普通色
+
+#### Removed
+- `Manual Operation`
+
+#### Fixed
+- 输出文本修复：`仅太阳/月亮` -> `仅究极之日/究极之月`
+
 ### [0.1.1] - 2017-12-17
 #### Added
 - 运行计时器

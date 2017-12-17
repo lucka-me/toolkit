@@ -4,9 +4,8 @@
 """
 神奇寶貝百科服飾列表生成器
 Author:     Lucka
-Version:    0.1.1
+Version:    0.2.0
 Licence:    MIT
-
 """
 
 # 庫
@@ -53,7 +52,7 @@ def getImg(imgSN, typeSN, colorSN):
     """
 
     # 生成圖片 URL
-    if sex == "男生":
+    if sex == "M":
         url = ("https://serebii.net/ultrasunultramoon/clothing/male/{0}.png"
                .format(imgSN))
     else:
@@ -72,24 +71,9 @@ def getImg(imgSN, typeSN, colorSN):
     urllib.request.urlretrieve(url, fileName)
     print("下載完成: {0}".format(fileName))
 
-    # 裁切圖片
-    # 目前本部分尺寸需要手動設置
-    # MARK: - Manual Operation
-    # 上衣:   96x96+(x)+50
-    # 褲裙:   96x96+(x)+105
-    # 襪子:   96x48+(x)+182
-    # 鞋子:   96x48+(x)+182
-    # 包包:   96x96+(x)+50
-    # 帽子:   64x64+(x)+8
-    # 眼鏡:   64x64+(x)+8
-    # 髮飾:   64x64+(x)+8
-    print("正在裁切圖片⋯")
     with Image(filename = fileName) as image:
-        sizeX = 96
-        sizeY = 96
-        x = int((image.width - sizeX) / 2)
-        y = 50
-        image.crop(x, y, width = sizeX, height = sizeY)
+        cropX = int((image.width - imgWidth) / 2)
+        image.crop(cropX, cropY, width = imgWidth, height = imgHeight)
         image.save(filename = fileName)
     print("圖片處理完成。")
 
@@ -123,16 +107,12 @@ def getColumn(typeSN, colorSN,
                        typeListEN[typeSN]))
 
     # 圖樣列
-    # MARK: - Manual Operation
-    # 請確定圖片寬度
-    # 上衣、褲裙、襪子、鞋子、包包:   96px
-    # 帽子、眼鏡、髮飾:             64px
     if colorSN == -1:
         color = ""
     else:
         color = " {0}".format(colorListCH[colorSN])
-    imgRow = ("[[File:USUM {0} {1}{2}.png|96px]]"
-              .format(sex, typeListCH[typeSN], color)
+    imgRow = ("[[File:USUM {0} {1}{2}.png|{3}px]]"
+              .format(sex, typeListCH[typeSN], color, imgWidth)
     )
 
     # 顏色列樣式
@@ -173,22 +153,72 @@ def getColumn(typeSN, colorSN,
 
 # 主程序
 print(__doc__)
-print("請在程序代碼中確認下列基本參數:")
-print("  * 性別、裁切尺寸、圖片寬度")
-print("請搜索 # MARK: - Manual Operation")
-answer = input("是否繼續 (Y/N): ")
-if answer != "y" and answer != "Y":
-    exit()
 
-# 計時器
+# 设置基本参数
+print("請输入基本參數:")
+sex = input("請輸入性別 (M/F): ")
+sex = sex.upper()
+while sex != "M" and sex != "F":
+    print("警告: 輸入錯誤")
+    sex = input("請輸入性別 (M/F): ")
+    willGetImg = willGetImg.upper()
+if sex == "M":
+    versionCode = "US"
+    catalogList = ["上衣", "裤子", "袜子", "鞋子", "包包", "帽子", "眼镜", "发饰"]
+else:
+    versionCode = "UM"
+    catalogList = ["上衣", "裤子、裙子", "袜子", "鞋子", "包包", "帽子", "眼镜", "发饰"]
+
+print("請選擇服飾類別:")
+for index in range(0, len(catalogList)):
+    print("{0}:\t{1}".format(index, catalogList[index]))
+catalogSN = input("請輸入序號 (0~{0}): ".format(len(catalogList) - 1))
+catalogSN = int(catalogSN)
+while catalogSN < 0 or catalogSN >= len(catalogList):
+    print("警告: 輸入錯誤")
+    catalogSN = input("請輸入序號 (0~{0}): ".format(len(catalogList) - 1))
+    catalogSN = int(catalogSN)
+# 確定圖片尺寸和裁切尺寸
+# 裁切圖片
+# 0 上衣:     96x96+(x)+50
+# 1 褲裙:     96x96+(x)+105
+# 2 襪子:     96x48+(x)+182
+# 3 鞋子:     96x48+(x)+182
+# 4 包包:     96x96+(x)+50
+# 5 帽子:     64x64+(x)+8
+# 6 眼鏡:     64x64+(x)+8
+# 7 髮飾:     64x64+(x)+8
+if catalogSN > 4:
+    imgWidth = 64
+    imgHeight = 64
+    cropY = 8
+else:
+    imgWidth = 96
+    if catalogSN == 2 or catalogSN == 3:
+        imgHeight = 48
+        cropY = 182
+    else:
+        imgHeight = 96
+        if catalogSN == 1:
+            cropY = 105
+        else:
+            cropY = 50
+
+willGetImg = input("是否需要下載圖片 (Y/N): ")
+willGetImg = willGetImg.upper()
+while willGetImg != "Y" and willGetImg != "N":
+    print("警告: 輸入錯誤")
+    willGetImg = input("是否需要下載圖片 (Y/N): ")
+    willGetImg = willGetImg.upper()
+if willGetImg == "Y":
+    willGetImg = True
+else:
+    willGetImg = False
+
+print("初始化完畢，開始處理。")
+
+# 設置計時器
 startTime = time.time()
-
-# 基本信息，需手動設置
-# MARK: - Manual Operation
-# sex = "女生"
-# versionCode = "UM"
-sex = "男生"
-versionCode = "US"
 
 # 讀取譯名列表
 print("正在讀取文本文件⋯")
@@ -228,7 +258,7 @@ listFile = open("list.txt", "r")
 wikiFile = open("wiki.txt", "w")
 wikiTableHead = """
 {{| class = "a-l eplist roundy sortable bgd-{0} b-{0}"
-|- class = "bgl-{0}"
+|- class = "bg-{0}"
 ! class = "roundytl-6" rowspan = 4 | 名称
 ! class = "unsortable" rowspan = 4 | 图样
 ! 颜色／图案
@@ -237,16 +267,19 @@ wikiTableHead = """
 |-
 ! class = "bgwhite" | 太阳／月亮均有
 |-
-! class = "bgl-US" | 仅太阳
+! class = "bgl-US" | 仅究极之日
 |-
-! class = "unsortable bgl-UM" | 仅月亮
+! class = "unsortable bgl-UM" | 仅究极之月
 
 """.format(versionCode)
 wikiFile.write(wikiTableHead)
+
 # 處理計數
 count = 0
 # 錯誤列表
 errorList = []
+# 總價統計
+priceSum = 0
 
 while True:
     """
@@ -328,8 +361,10 @@ while True:
         print("警告: 未成功處理第此項目，請檢查。")
         errorList.append(count + 1)
     else:
-        print("正在處理圖片…")
-        getImg(imgSN, typeSN, colorSN)
+        priceSum = priceSum + price
+        if willGetImg:
+            print("正在處理圖片…")
+            getImg(imgSN, typeSN, colorSN)
         wikiColumn = getColumn(typeSN, colorSN,
                                price,
                                locationSN, location,
@@ -341,7 +376,14 @@ while True:
     count = count + 1
     print("")
 
-wikiFile.write("|}\n")
+wikiFile.write("""|-
+| class = \"bg-{0}\" colspan = 5 | \'\'\'共{1}款{2}\'\'\'<br/>\'\'\'<small>价值{{{{$}}}}{3:,}</small>\'\'\'
+
+|}}
+""".format(versionCode,
+           count - len(errorList),
+           catalogList[catalogSN],
+           priceSum))
 wikiFile.close()
 print("處理完畢，共處理{0}個服飾，已生成完整 wiki.txt 文件及圖片。".format(count))
 if len(errorList) > 0:
