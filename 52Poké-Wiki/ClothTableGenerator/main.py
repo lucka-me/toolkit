@@ -171,7 +171,7 @@ def getColumn(rowspan, typeSN, colorSN,
         if price == 0:
             priceRow = "-"
         else:
-            priceRow = "{{{{$}}}}{0}".format(price)
+            priceRow = "{{{{$}}}}{0:,}".format(price)
 
         # 購入地點列
         if locationSN == -1:
@@ -373,7 +373,7 @@ while True:
         price = int(line)
     else:
         price = 0
-    print("價格:\t\t{0}".format(price))
+    print("價格:\t\t{0:,}".format(price))
 
     line = listFile.readline()
     location = line.replace("\n", "")
