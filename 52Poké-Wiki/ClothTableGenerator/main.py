@@ -4,7 +4,7 @@
 """
 神奇寶貝百科服飾列表生成器
 Author:     Lucka
-Version:    0.2.0
+Version:    0.3.0
 Licence:    MIT
 """
 
@@ -12,6 +12,34 @@ Licence:    MIT
 import time
 import urllib.request
 from wand.image import Image
+
+# 類
+class Cloth:
+    def __init__(self, typeSN, colorSN,
+                 price,
+                 locationSN, location,
+                 version):
+        """
+        初始化 Cloth 類
+        參數列表:
+            typeSN:     int     服裝類型序列號
+            colorSN:    int     顏色類型序列號
+                                -1: 無顏色類型
+            price:      int     價格
+            locationSN: int     購買城市序列號
+                                -1: 無且不生成鏈接
+            location:   str     購買商店或地點
+            version:    int     版本限定
+                                0:  雙版本均有
+                                1:  究極之日限定
+                                2:  究極之月限定
+        """
+        self.typeSN = typeSN
+        self.colorSN = colorSN
+        self.price = price
+        self.locationSN = locationSN
+        self.location = location
+        self.version = version
 
 def getFullyMatchedSN(target, array):
     """
@@ -51,6 +79,8 @@ def getImg(imgSN, typeSN, colorSN):
                             -1: 無顏色類型
     """
 
+    print("正在處理圖片…")
+
     # 生成圖片 URL
     if sex == "M":
         url = ("https://serebii.net/ultrasunultramoon/clothing/male/{0}.png"
@@ -78,13 +108,16 @@ def getImg(imgSN, typeSN, colorSN):
     print("圖片處理完成。")
 
 
-def getColumn(typeSN, colorSN,
+def getColumn(rowspan, typeSN, colorSN,
               price,
               locationSN, location,
               version):
     """
     獲取 Wiki 各式的表格行代碼
     參數列表:
+        rowspan:    int     合併的行數量
+                            0:  本行被合併
+                            1:  不合併
         typeSN:     int     服裝類型序列號
         colorSN:    int     顏色類型序列號
                             -1: 無顏色類型
@@ -100,12 +133,7 @@ def getColumn(typeSN, colorSN,
         String      Wiki 各式的表格行代碼
     """
 
-    # 名稱列
-    nameRow = ("{0}<br/><small>{1}</small><br/><small>{2}</small>"
-               .format(typeListCH[typeSN],
-                       typeListJP[typeSN],
-                       typeListEN[typeSN]))
-
+    # 圖樣列和顏色列不會被合併
     # 圖樣列
     if colorSN == -1:
         color = ""
@@ -116,9 +144,8 @@ def getColumn(typeSN, colorSN,
     )
 
     # 顏色列樣式
-    if version == 0:
-        colorRowStyle = ""
-    elif version == 1:
+    colorRowStyle = ""
+    if version == 1:
         colorRowStyle = "class = \"bgl-US\" | "
     elif version == 2:
         colorRowStyle = "class = \"bgl-UM\" | "
@@ -129,30 +156,55 @@ def getColumn(typeSN, colorSN,
     else:
         colorRow = "{0}".format(colorListCH[colorSN])
 
-    # 價格列
-    if price == 0:
-        priceRow = "-"
+    # 如果被合併，僅輸出以上內容
+    if rowspan == 0:
+        result = ("|-\n| {0}\n| {1}{2}\n\n"
+                  .format(imgRow, colorRowStyle, colorRow))
     else:
-        priceRow = "{{{{$}}}}{0}".format(price)
+        # 名稱列
+        nameRow = ("{0}<br/><small>{1}</small><br/><small>{2}</small>"
+                   .format(typeListCH[typeSN],
+                           typeListJP[typeSN],
+                           typeListEN[typeSN]))
 
-    # 購入地點列
-    if locationSN == -1:
-        locationRow = location
-    else:
-        locationRow = ("[[{0}]]<br/>[[{0}#{1}|{1}]]"
-                       .format(locationListCH[locationSN], location))
+        # 價格列
+        if price == 0:
+            priceRow = "-"
+        else:
+            priceRow = "{{{{$}}}}{0}".format(price)
 
-    # 生成代碼
-    result = ("|-\n| {0}\n| {1}\n| {2}{3}\n| {4}\n| {5}\n\n"
-              .format(nameRow,
-                      imgRow,
-                      colorRowStyle, colorRow,
-                      priceRow,
-                      locationRow))
+        # 購入地點列
+        if locationSN == -1:
+            locationRow = location
+        else:
+            locationRow = ("[[{0}]]<br/>[[{0}#{1}|{1}]]"
+                           .format(locationListCH[locationSN], location))
+
+        # 生成代碼
+        if rowspan > 1:
+            rowspanStyle = "rowspan = {0} |".format(rowspan)
+            result = ("|-\n| {0}{1}\n| {2}\n| {3}{4}\n| {5}{6}\n| {7}{8}\n\n"
+                      .format(rowspanStyle, nameRow,
+                              imgRow,
+                              colorRowStyle, colorRow,
+                              rowspanStyle, priceRow,
+                              rowspanStyle, locationRow))
+        else:
+            result = ("|-\n| {0}\n| {1}\n| {2}{3}\n| {4}\n| {5}\n\n"
+                      .format(nameRow,
+                              imgRow,
+                              colorRowStyle, colorRow,
+                              priceRow,
+                              locationRow))
+        # Gracidea -> [[好奥乐市]]<br/>[[购物广场]][[购物广场#葛拉西蒂亞|葛拉西蒂亞]]
+        result = result.replace("Gracidea",
+                                "[[好奥乐市]]<br/>[[购物广场]][[购物广场#葛拉西蒂亞|葛拉西蒂亞]]")
     return result
+
 
 # 主程序
 print(__doc__)
+
 
 # 设置基本参数
 print("請输入基本參數:")
@@ -217,8 +269,10 @@ else:
 
 print("初始化完畢，開始處理。")
 
+
 # 設置計時器
 startTime = time.time()
+
 
 # 讀取譯名列表
 print("正在讀取文本文件⋯")
@@ -230,6 +284,7 @@ colorListEN = open('color_en.txt').read().splitlines()
 locationListCH = open('location_ch.txt').read().splitlines()
 locationListEN = open('location_en.txt').read().splitlines()
 print("讀取完畢。")
+
 
 # 處理原文件
 print("正在處理 HTML 文件⋯")
@@ -252,30 +307,15 @@ targetFile.write(sourceString)
 targetFile.close()
 print("處理完畢，已生成 list.txt 文件。")
 
-# 讀取列表文件並生成 Wiki 代碼
-print("正在生成 Wiki 代碼⋯")
+
+# 讀取列表文件並生成列表及下載圖片
+if willGetImg:
+    print("正在生成列表及下載圖片⋯")
+else:
+    print("正在生成列表⋯")
+
+clothList = []
 listFile = open("list.txt", "r")
-wikiFile = open("wiki.txt", "w")
-wikiTableHead = """
-{{| class = "a-l eplist roundy sortable bgd-{0} b-{0}"
-|- class = "bg-{0}"
-! class = "roundytl-6" rowspan = 4 | 名称
-! class = "unsortable" rowspan = 4 | 图样
-! 颜色／图案
-! data-sort-type = "number" rowspan = 4 | 价格
-! class = "roundytr-6" rowspan = 4 | 购入地点
-|-
-! class = "bgwhite" | 太阳／月亮均有
-|-
-! class = "bgl-US" | 仅究极之日
-|-
-! class = "unsortable bgl-UM" | 仅究极之月
-
-""".format(versionCode)
-wikiFile.write(wikiTableHead)
-
-# 處理計數
-count = 0
 # 錯誤列表
 errorList = []
 # 總價統計
@@ -302,7 +342,7 @@ while True:
         break
 
     print("正在處理：")
-    print("序號:\t\t{0}".format(count + 1))
+    print("序號:\t\t{0}".format(len(clothList) + 1))
     line = listFile.readline()
     imgSN = int(line)
     print("圖片編號:\t{0}".format(imgSN))
@@ -355,37 +395,90 @@ while True:
 
     listFile.readline()
 
-    # 生成 Wiki 各式的表格行並寫入文件
-    # 若未成功識別種類則發出警告且不生成代碼
+    # 加入列表並下載圖片
+    # 若未成功識別種類則發出警告且不加入列表
     if typeSN == -1:
         print("警告: 未成功處理第此項目，請檢查。")
-        errorList.append(count + 1)
+        errorList.append(len(clothList) + 1)
     else:
         priceSum = priceSum + price
         if willGetImg:
-            print("正在處理圖片…")
             getImg(imgSN, typeSN, colorSN)
-        wikiColumn = getColumn(typeSN, colorSN,
-                               price,
-                               locationSN, location,
-                               version)
-        # Gracidea -> [[好奥乐市]]<br/>[[购物广场]][[购物广场#葛拉西蒂亞|葛拉西蒂亞]]
-        wikiColumn = wikiColumn.replace("Gracidea",
-                                        "[[好奥乐市]]<br/>[[购物广场]][[购物广场#葛拉西蒂亞|葛拉西蒂亞]]")
-        wikiFile.write(wikiColumn)
-    count = count + 1
+        newCloth = Cloth(typeSN, colorSN, price, locationSN, location, version)
+        clothList.append(newCloth)
     print("")
+
+listFile.close()
+print("處理完畢。\n")
+
+# 讀取列表並生成 Wiki 代碼
+print("正在生成 Wiki 代碼⋯")
+wikiFile = open("wiki.txt", "w")
+wikiTableHead = """== {0} ==
+{{| class = "a-l eplist roundy sortable bgd-{1} b-{1}"
+|- class = "bg-{1}"
+! class = "roundytl-6" rowspan = 4 | 名称
+! class = "unsortable" rowspan = 4 | 图样
+! 颜色／图案
+! data-sort-type = "number" rowspan = 4 | 价格
+! class = "roundytr-6" rowspan = 4 | 购入地点
+|-
+! class = "bgwhite" | 太阳／月亮均有
+|-
+! class = "bgl-US" | 仅究极之日
+|-
+! class = "unsortable bgl-UM" | 仅究极之月
+
+""".format(catalogList[catalogSN], versionCode)
+wikiFile.write(wikiTableHead)
+
+scanner = 0
+while scanner < len(clothList):
+    # 如果有同類型服飾則應當合併
+    # 如果類型序列號、價格和購買城市序列號均一致則可判斷為同一類型並予以合併
+    spanCount = 1
+    print("{0}:\t".format(typeListCH[clothList[scanner].typeSN]), end = "")
+    while (scanner + spanCount < len(clothList) and
+           clothList[scanner].typeSN == clothList[scanner + spanCount].typeSN and
+           clothList[scanner].price == clothList[scanner + spanCount].price and
+           clothList[scanner].locationSN == clothList[scanner + spanCount].locationSN):
+        spanCount += 1
+    wikiColumn = getColumn(spanCount,
+                           clothList[scanner].typeSN,
+                           clothList[scanner].colorSN,
+                           clothList[scanner].price,
+                           clothList[scanner].locationSN,
+                           clothList[scanner].location,
+                           clothList[scanner].version)
+    wikiFile.write(wikiColumn)
+    if spanCount > 1:
+        print("合併{0}行".format(spanCount))
+        for spanScanner in range(1, spanCount):
+            wikiColumn = getColumn(0,
+                                   clothList[scanner + spanScanner].typeSN,
+                                   clothList[scanner + spanScanner].colorSN,
+                                   clothList[scanner + spanScanner].price,
+                                   clothList[scanner + spanScanner].locationSN,
+                                   clothList[scanner + spanScanner].location,
+                                   clothList[scanner + spanScanner].version)
+            wikiFile.write(wikiColumn)
+    else:
+        print("無須合併")
+    scanner += spanCount
 
 wikiFile.write("""|-
 | class = \"bg-{0}\" colspan = 5 | \'\'\'共{1}款{2}\'\'\'<br/>\'\'\'<small>价值{{{{$}}}}{3:,}</small>\'\'\'
 
 |}}
+
+{{{{-}}}}
 """.format(versionCode,
-           count - len(errorList),
+           len(clothList) - len(errorList),
            catalogList[catalogSN],
            priceSum))
 wikiFile.close()
-print("處理完畢，共處理{0}個服飾，已生成完整 wiki.txt 文件及圖片。".format(count))
+
+print("處理完畢，共處理{0}個服飾，已生成完整 wiki.txt 文件及圖片。".format(len(clothList)))
 if len(errorList) > 0:
     print("未成功處理{0}個服飾，序號如下:".format(len(errorList)))
     for scanner in errorList:
