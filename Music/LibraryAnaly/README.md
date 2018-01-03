@@ -57,12 +57,12 @@
 生成的 `.data` 记录储存在 `./Library` 文件夹中。
 
 ### Command Line Option List
-| Opt / Long Opt  | Args         | Note
-| :-------------- | :----------- | :---
-| `-a``--add`     |              | 扫描新的 iTunes 音乐库 XML 文件并保存数据
-| `-r``--report`  | `<filename>` | 生成指定音乐库记录的报告
-| `-c``--compare` | `<filename>` | 比较当前音乐库和过去指定音乐库记录并生成报告
-| `-h``--help`    |              | 显示帮助文本
+| Opt / Long Opt   | Args         | Note
+| :--------------- | :----------- | :---
+| `-a` `--add`     |              | 扫描新的 iTunes 音乐库 XML 文件并保存数据
+| `-r` `--report`  | `<filename>` | 生成指定音乐库记录的报告
+| `-c` `--compare` | `<filename>` | 比较当前音乐库和过去指定音乐库记录并生成报告
+| `-h` `--help`    |              | 显示帮助文本
 
 ## Changelog
 ### [0.1.0] - 2018-01-03
