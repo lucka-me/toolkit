@@ -4,7 +4,7 @@
 """
 LibraryAnaly for iTunes
 Author:     Lucka
-Version:    0.2.0
+Version:    0.2.1
 Licence:    MIT
 """
 
@@ -66,7 +66,12 @@ class Music:
 
 class Album:
     def __init__(self,
-                 albumID, totalTime, name, trackCount, dateAdded, playCount):
+                 albumID,
+                 totalTime,
+                 name,
+                 trackCount,
+                 dateAdded,
+                 playCount, playTime):
         """
         初始化 Album 類
         參數/成員變量列表:
@@ -76,6 +81,7 @@ class Album:
             trackCount  int         音軌數量
             dateAdded   datetime    加入音樂庫的時間
             playCount   int         總播放次數
+            playTime    timedelta   總播放時長
         """
         self.albumID = albumID
         self.totalTime = totalTime
@@ -83,6 +89,7 @@ class Album:
         self.trackCount = trackCount
         self.dateAdded = dateAdded
         self.playCount = playCount
+        self.playTime = playTime
 
 class MusicLibrary:
     def __init__(self, musicList, albumList, date):
@@ -93,7 +100,7 @@ class MusicLibrary:
             albumList   [Album]     專輯列表
             date        datetime    音樂庫修改時間
         """
-        self.version = "0.2.0"
+        self.version = "0.2.1"
         self.musicList = musicList
         self.albumList = albumList
         self.date = date
@@ -236,7 +243,8 @@ def getLibrary(filename):
         # 拋棄有聲書和最後一行
         if genre != "Books" and trackID != 0:
             # 加入歌曲列表
-            newMusic = Music(trackID, totalTime,
+            newMusic = Music(trackID,
+                             totalTime,
                              discNumber, trackNumber,
                              year, dateAdded,
                              playCount,
@@ -245,16 +253,23 @@ def getLibrary(filename):
             musicList.append(newMusic)
             # 更新專輯列表
             isAlbumExist = False
-            for scanner in range(0, len(albumList)):
-                if albumList[scanner].name == newMusic.album:
-                    albumList[scanner].totalTime += newMusic.totalTime
-                    albumList[scanner].trackCount += 1
-                    albumList[scanner].playCount += newMusic.playCount
-                    albumList[scanner].dateAdded = newMusic.dateAdded
+            for album in albumList:
+                if album.name == newMusic.album:
+                    album.totalTime += totalTime
+                    album.trackCount += 1
+                    album.playCount += playCount
+                    album.dateAdded = dateAdded
+                    album.playTime += totalTime * playCount
                     isAlbumExist = True
                     break
             if not isAlbumExist:
-                newAlbum = Album(trackID, totalTime, album, 1, dateAdded, playCount)
+                newAlbum = Album(newMusic.trackID,
+                                 newMusic.totalTime,
+                                 newMusic.album,
+                                 1,
+                                 newMusic.dateAdded,
+                                 newMusic.playCount,
+                                 newMusic.totalTime * newMusic.playCount)
                 albumList.append(newAlbum)
         libraryLine = libraryFile.readline()
 
@@ -311,7 +326,7 @@ def getReport(library):
                                  key = lambda music: music.playCount * music.totalTime,
                                  reverse = True)
     albumListByPlayTime = sorted(library.albumList,
-                                 key = lambda album: album.playCount * album.totalTime,
+                                 key = lambda album: album.playTime,
                                  reverse = True)
     # 報告文本
     # 開頭
@@ -358,8 +373,7 @@ def getReport(library):
     reportText += (splitLine('-') + '\n' +
                    "專輯排行\n" + "排名\t播放小時數\t標題\n")
     for scanner in range(0, 10):
-        playHours = getHours(albumListByPlayTime[scanner].playCount *
-                             albumListByPlayTime[scanner].totalTime)
+        playHours = getHours(albumListByPlayTime[scanner].playTime)
         reportText += ("#{num:0>2}\t{playHours:0>5.0f}\t{name}\n"
               .format(num = scanner + 1,
                       playHours = playHours,
@@ -416,7 +430,7 @@ def compare(libraryA, libraryB):
                           trackIDA = libraryA.musicList[0].trackID,
                           deviation = deviation))
             break
-    changedMusicList = []
+    changedMusicList = newMusicList
 
     for musicA in libraryA.musicList:
         for musicB in libraryB.musicList:
@@ -430,13 +444,14 @@ def compare(libraryA, libraryB):
                 break
     # 發生變化的專輯列表
     # albumID 與專輯第一首歌 trackID 一致，因此存在同樣的偏差
-    changedAlbumList = []
+    changedAlbumList = newAlbumList
     for albumA in libraryA.albumList:
         for albumB in libraryB.albumList:
             if albumA.albumID == albumB.albumID + deviation:
                 if albumA.playCount > albumB.playCount:
                     changedAlbum = albumA
                     changedAlbum.playCount -= albumB.playCount
+                    changedAlbum.playTime -= albumB.playTime
                     changedAlbumList.append(changedAlbum)
                 break
     # 按播放次數排序
@@ -448,6 +463,15 @@ def compare(libraryA, libraryB):
     albumListByPlayCount = sorted(changedAlbumList,
                                   key = lambda album: album.playCount,
                                   reverse = True)
+    # 按播放時長排序
+    # 歌曲排行
+    musicListByPlayTime = sorted(changedMusicList,
+                                 key = lambda music: music.playCount * music.totalTime,
+                                 reverse = True)
+    # 專輯排行
+    albumListByPlayTime = sorted(changedAlbumList,
+                                 key = lambda album: album.playTime,
+                                 reverse = True)
     # 報告文本
     # 開頭
     reportText = ("音樂庫對比報告\n" + splitLine() + '\n' +
@@ -477,6 +501,25 @@ def compare(libraryA, libraryB):
               .format(num = scanner + 1,
                       playCount = albumListByPlayCount[scanner].playCount,
                       name = albumListByPlayCount[scanner].name))
+    reportText += splitLine() + '\n'
+    # 播放時長 TOP 10
+    # 歌曲排行
+    reportText += ("播放時長 TOP 10\n" + splitLine('-') + '\n' +
+                   "歌曲排行\n" + "排名\t播放小時數\t標題\n")
+    for scanner in range(0, 10):
+        reportText += ("#{num:0>2}\t{playHours:0>4.0f}\t{name}\n"
+                       .format(num = scanner + 1,
+                               playHours = getHours(musicListByPlayTime[scanner].playCount *
+                                                    musicListByPlayTime[scanner].totalTime),
+                               name = musicListByPlayTime[scanner].name))
+    # 專輯排行
+    reportText += (splitLine('-') + '\n' +
+                   "專輯排行\n" + "排名\t播放小時數\t標題\n")
+    for scanner in range(0, 10):
+        reportText += ("#{num:0>2}\t{playHours:0>5.0f}\t{name}\n"
+              .format(num = scanner + 1,
+                      playHours = getHours(albumListByPlayTime[scanner].playTime),
+                      name = albumListByPlayTime[scanner].name))
     reportText += splitLine() + '\n'
     print(reportText)
     # 報告文件
@@ -591,7 +634,7 @@ def main():
 
 # 全局變量
 # 最新數據版本
-lastVersion = "0.2.0"
+lastVersion = "0.2.1"
 # 起點時間
 zeroTime = datetime.fromtimestamp(0)
 if __name__ == '__main__':

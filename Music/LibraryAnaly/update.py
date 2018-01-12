@@ -5,7 +5,7 @@
 LibraryAnaly for iTunes
 Record Update Tool
 Author:     Lucka
-Version:    0.2.0
+Version:    0.2.1
 Licence:    MIT
 """
 
@@ -45,8 +45,8 @@ class Music:
 
     Version 0.2.0
     對應版本
-        MusicAnaly  0.2.0
-        Library     0.2.0
+        MusicAnaly  0.1.0   -   0.2.1
+        Library     0.1.0   -   0.2.1
     新增成員變量
         genre       str 音樂類型
         location    str 音頻文件路徑
@@ -86,15 +86,28 @@ class Album:
         trackCount  int         音軌數量
         dateAdded   datetime    加入音樂庫的時間
         playCount   int         總播放次數
+
+    Version 0.2.1
+    對應版本
+        MusicAnaly  0.1.0   -   0.2.1
+        Library     0.1.0   -   0.2.1
+    新增成員變量
+        playTime    timedelta   總播放時長
     """
     def __init__(self,
-                 albumID, totalTime, name, trackCount, dateAdded, playCount):
+                 albumID,
+                 totalTime,
+                 name,
+                 trackCount,
+                 dateAdded,
+                 playCount, playTime):
         self.albumID = albumID
         self.totalTime = totalTime
         self.name = name
         self.trackCount = trackCount
         self.dateAdded = dateAdded
         self.playCount = playCount
+        self.playTime = playTime
 
 class MusicLibrary:
     """
@@ -116,9 +129,15 @@ class MusicLibrary:
         Album       0.1.0
     新增成員變量
         version     str     Library 數據版本
+
+    Version 0.2.1
+    對應版本
+        MusicAnaly  0.1.0   -   0.2.1
+        Music       0.2.0
+        Album       0.2.1
     """
     def __init__(self, musicList, albumList, date):
-        self.version = "0.2.0"
+        self.version = "0.2.1"
         self.musicList = musicList
         self.albumList = albumList
         self.date = date
@@ -267,16 +286,24 @@ def getSampleLibrary():
             musicList.append(newMusic)
             # 更新專輯列表
             isAlbumExist = False
-            for scanner in range(0, len(albumList)):
-                if albumList[scanner].name == newMusic.album:
-                    albumList[scanner].totalTime += newMusic.totalTime
-                    albumList[scanner].trackCount += 1
-                    albumList[scanner].playCount += newMusic.playCount
-                    albumList[scanner].dateAdded = newMusic.dateAdded
+            for album in albumList:
+                if album.name == newMusic.album:
+                    album.totalTime += totalTime
+                    album.trackCount += 1
+                    album.playCount += playCount
+                    album.dateAdded = dateAdded
+                    album.playTime += totalTime * playCount
                     isAlbumExist = True
                     break
             if not isAlbumExist:
-                newAlbum = Album(trackID, totalTime, album, 1, dateAdded, playCount)
+                newAlbum = Album(trackID,
+                                 totalTime,
+                                 album,
+                                 1,
+                                 dateAdded,
+                                 playCount,
+                                 totalTime * playCount)
+                albumList.append(newAlbum)
                 albumList.append(newAlbum)
         libraryLine = libraryXMLFile.readline()
     libraryXMLFile.close()
@@ -341,9 +368,11 @@ def update(oldLibrary):
           .format(oldVersion = version, lastVersion = lastVersion))
 
     newMusicList = []
+    newAlbumList = []
     for sampleMusic in sampleLibrary.musicList:
         for oldMusic in oldLibrary.musicList:
             if sampleMusic.trackID == oldMusic.trackID + deviation:
+                # 加入歌曲列表
                 newMusic = Music(sampleMusic.trackID,
                                  sampleMusic.totalTime,
                                  sampleMusic.discNumber,
@@ -357,8 +386,28 @@ def update(oldLibrary):
                                  sampleMusic.genre,
                                  sampleMusic.location)
                 newMusicList.append(newMusic)
+                # 更新專輯列表
+                isAlbumExist = False
+                for album in newAlbumList:
+                    if album.name == newMusic.album:
+                        album.totalTime += newMusic.totalTime
+                        album.trackCount += 1
+                        album.playCount += newMusic.playCount
+                        album.dateAdded = newMusic.dateAdded
+                        album.playTime += newMusic.totalTime * newMusic.playCount
+                        isAlbumExist = True
+                        break
+                if not isAlbumExist:
+                    newAlbum = Album(newMusic.trackID,
+                                     newMusic.totalTime,
+                                     newMusic.album,
+                                     1,
+                                     newMusic.dateAdded,
+                                     newMusic.playCount,
+                                     newMusic.totalTime * newMusic.playCount)
+                    newAlbumList.append(newAlbum)
     newLibrary = MusicLibrary(newMusicList,
-                              oldLibrary.albumList,
+                              newAlbumList,
                               oldLibrary.date)
     newLibraryFilename = ("./Library/{date}-new.data"
                           .format(date = newLibrary.getDateStr()))
@@ -417,7 +466,7 @@ def main():
             print(optionsHelp)
 
 # 最新版本號
-lastVersion = "0.2.0"
+lastVersion = "0.2.1"
 # 起點時間
 zeroTime = datetime.fromtimestamp(0)
 if __name__ == '__main__':

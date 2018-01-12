@@ -18,8 +18,8 @@
 | `name`        | 歌曲标题
 | `artist`      | 艺术家
 | `album`       | 专辑名称
-| `genre`       | 音乐类型
-| `location`    | 音频文件路径
+| `genre`       | 音乐类型<sup>`0.2.0`</sup>
+| `location`    | 音频文件路径<sup>`0.2.0`</sup>
 
 音乐库记录会记录专辑的下列信息：
 
@@ -31,6 +31,7 @@
 | `trackCount` | 音轨数量
 | `dateAdded`  | 加入音乐库的时间
 | `playCount`  | 总播放次数
+| `playTime`   | 总播放时长<sup>`0.2.1`</sup>
 
 单个音乐库的报告内容包括以下内容：
 
@@ -81,6 +82,24 @@
 | `-h` `--help`    |              | 显示帮助文本
 
 ## Changelog
+### [0.2.1] - 2018-01-12
+#### Version
+| Tool / File      | Version
+| :--------------- | :------
+| LibraryAnaly     | 0.2.1
+| Data Update Tool | 0.2.1
+| Data             | 0.2.1
+
+#### Added
+- 专辑记录中增加以下项目：
+
+| Key Name   | Description
+| :--------- | :----------
+| `playTime` | 总播放时长
+
+#### Fixed
+- 专辑总播放时长计算错误
+
 ### [0.2.0] - 2018-01-12
 #### Version
 | Tool / File      | Version
