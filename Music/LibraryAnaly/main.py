@@ -373,11 +373,17 @@ def compare(libraryA, libraryB):
         libraryB = temp
     # 時間差
     timeInterval = libraryA.date - libraryB.date
+    # 期間播放次數和期間播放時間
+    totalPlayCount = 0
+    totalPlayTime = zeroTime - zeroTime
+
     # 新增的歌曲
     newMusicList = []
     for scanner in libraryA.musicList:
         if scanner.dateAdded > libraryB.date:
             newMusicList.append(scanner)
+            totalPlayCount += scanner.playCount
+            totalPlayTime += scanner.totalTime * scanner.playCount
     # 新增的專輯
     newAlbumList = []
     for scanner in libraryA.albumList:
@@ -397,8 +403,7 @@ def compare(libraryA, libraryB):
                           deviation = deviation))
             break
     changedMusicList = []
-    playCount = 0
-    totalPlayTime = zeroTime - zeroTime
+
     for musicA in libraryA.musicList:
         for musicB in libraryB.musicList:
             if musicA.trackID == musicB.trackID + deviation:
@@ -407,7 +412,7 @@ def compare(libraryA, libraryB):
                     changedMusic.playCount -= musicB.playCount
                     changedMusicList.append(changedMusic)
                     totalPlayTime += changedMusic.totalTime * changedMusic.playCount
-                    playCount += changedMusic.playCount
+                    totalPlayCount += changedMusic.playCount
                 break
     # 發生變化的專輯列表
     # albumID 與專輯第一首歌 trackID 一致，因此存在同樣的偏差
@@ -442,7 +447,7 @@ def compare(libraryA, libraryB):
     reportText += ("聽了來自{albumPlayed}張專輯的{musicPlayed}首音樂，共聽了{playCount}次，{totalPlayTime:.0f}小時。\n"
                    .format(albumPlayed = len(changedAlbumList),
                            musicPlayed = len(changedMusicList),
-                           playCount = playCount,
+                           playCount = totalPlayCount,
                            totalPlayTime = getHours(totalPlayTime)) +
                    splitLine() + '\n')
     reportText += ("播放次數 TOP 10\n" + splitLine('-') + '\n' +
