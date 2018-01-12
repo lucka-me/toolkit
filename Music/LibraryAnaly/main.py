@@ -2,9 +2,9 @@
 # coding: utf-8
 
 """
-Music Review for iTunes
+LibraryAnaly for iTunes
 Author:     Lucka
-Version:    0.1.0
+Version:    0.2.0
 Licence:    MIT
 """
 
@@ -33,7 +33,8 @@ class Music:
                  discNumber, trackNumber,
                  year, dateAdded,
                  playCount,
-                 name, artist, album):
+                 name, artist, album, genre,
+                 location):
         """
         初始化 Music 類
         參數/成員變量列表:
@@ -47,6 +48,8 @@ class Music:
             name        str         歌曲標題
             artist      str         藝術家
             album       str         專輯名稱
+            genre       str         音樂類型
+            location    str         音頻文件路徑
         """
         self.trackID = trackID
         self.totalTime = totalTime
@@ -58,6 +61,8 @@ class Music:
         self.name = name
         self.artist = artist
         self.album = album
+        self.genre = genre
+        self.location = location
 
 class Album:
     def __init__(self,
@@ -88,6 +93,7 @@ class MusicLibrary:
             albumList   [Album]     專輯列表
             date        datetime    音樂庫修改時間
         """
+        self.version = "0.2.0"
         self.musicList = musicList
         self.albumList = albumList
         self.date = date
@@ -105,7 +111,7 @@ def getLibrary(filename):
     讀取 iTunes 音樂庫 XML 文件
     參數列表:
         filename    str 文件名
-    返回：
+    返回:
         MusicLibrary    音樂庫類
     """
     try:
@@ -150,6 +156,8 @@ def getLibrary(filename):
         ...
         <key>Album</key><string>John Williams Conducts Music from the Star Wars Saga</string>
         <key>Genre</key><string>Soundtrack</string>
+        ...
+        <key>Location</key><string>file:///Media/Music/English/John%20Williams%20Conducts%20Music%20from%20the%20Star%20Wars%20Saga/05.%20The%20Imperial%20March.mp3</string>
         ...
     </dict>
     """
@@ -217,6 +225,11 @@ def getLibrary(filename):
                 libraryLine = libraryLine.replace("\t\t\t<key>Genre</key><string>", "")
                 libraryLine = libraryLine.replace("</string>\n", "")
                 genre = libraryLine
+            if "<key>Location</key>" in libraryLine:
+                libraryLine = libraryLine.replace("\t\t\t<key>Location</key><string>", "")
+                libraryLine = libraryLine.replace("</string>\n", "")
+                libraryLine = libraryLine.replace("%20", " ")
+                location = libraryLine
             libraryLine = libraryFile.readline()
             libraryLine = libraryLine.replace("&#38;", "&")
 
@@ -227,7 +240,8 @@ def getLibrary(filename):
                              discNumber, trackNumber,
                              year, dateAdded,
                              playCount,
-                             name, artist, album)
+                             name, artist, album, genre,
+                             location)
             musicList.append(newMusic)
             # 更新專輯列表
             isAlbumExist = False
@@ -267,7 +281,7 @@ def addLibrary():
 def getReport(library):
     """
     輸出音樂庫的報告，包括文件。
-    參數列表：
+    參數列表:
         library MusicLibrary    要輸出報告的音樂庫
     """
     # 時間字符串格式
@@ -362,7 +376,7 @@ def getReport(library):
 def compare(libraryA, libraryB):
     """
     對比兩個音樂庫紀錄，生成報告
-    參數列表：
+    參數列表:
         libraryA    MusicLibrary    第一個音樂庫
         libraryB    MusicLibrary    第二個音樂庫
     """
@@ -477,10 +491,10 @@ def compare(libraryA, libraryB):
 def splitLine(char = '=', length = 0):
     """
     生成分割線
-    參數列表：
+    參數列表:
         [char]      str 分割線的字符串，默認為 "="
         [length]    int 分割線長度，若不填或為0則生成與終端寬度相同的分割線
-    返回：
+    返回:
         str         分割線字符串
     """
     if length == 0:
@@ -493,66 +507,92 @@ def splitLine(char = '=', length = 0):
 def getHours(timeInterval):
     """
     獲取 timedelta 的小時數
-    參數列表：
+    參數列表:
         timeInterval    timedelta
-    返回：
+    返回:
         double          浮點小時數
     """
     return timeInterval.days * 24 + timeInterval.seconds / 3600
 
-# 主程序
-# 检查并创建 Library 文件夹
-if not os.path.exists("./Library"):
-    os.mkdir("./Library")
-# 創建起點時間
+def main():
+    # 检查并创建 Library 文件夹
+    if not os.path.exists("./Library"):
+        os.mkdir("./Library")
+
+    # 處理命令行參數
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],
+                                   "har:c:",
+                                   ["help",
+                                    "add",
+                                    "report=",
+                                    "compare="])
+    except getopt.GetoptError as error:
+        print("Error: {error}".format(error = error))
+        print(optionsHelp)
+        exit()
+
+    print(__doc__)
+    if len(opts) == 0:
+        print("請在命令行中添加參數。")
+        print(optionsHelp)
+        exit()
+
+    for opt, argv in opts:
+        if opt in ("-h", "--help"):
+            print(optionsHelp)
+        elif opt in ("-a", "--add"):
+            addLibrary()
+        elif opt in ("-r", "--report"):
+            libraryFilename = argv
+            libraryFilename = "./Library/" + libraryFilename
+            try:
+                libraryFile = open(libraryFilename, "rb")
+            except Exception as error:
+                print("ERROR: {error}".format(error = error))
+                exit()
+            library = pickle.load(libraryFile)
+            try:
+                version = library.version
+            except Exception as error:
+                print("記錄文件 {filename} 數據版本過低，請運行數據更新工具"
+                      .format(filename = libraryFilename))
+                exit()
+            if version != lastVersion:
+                print("記錄文件 {filename} 數據版本過低，請運行數據更新工具"
+                      .format(filename = libraryFilename))
+                exit()
+            getReport(library)
+        elif opt in ("-c", "--compare"):
+            libraryA = getLibrary("iTunes Music Library.xml")
+            # 載入記錄
+            libraryBFilename = argv
+            libraryBFilename = "./Library/" + libraryBFilename
+            try:
+                libraryBFile = open(libraryBFilename, "rb")
+            except Exception as error:
+                print("ERROR: {error}".format(error = error))
+                exit()
+            libraryB = pickle.load(libraryBFile)
+            try:
+                version = libraryB.version
+            except Exception as error:
+                print("記錄文件 {filename} 數據版本過低，請運行數據更新工具"
+                      .format(filename = libraryBFilename))
+                exit()
+            if version != lastVersion:
+                print("記錄文件 {filename} 數據版本過低，請運行數據更新工具"
+                      .format(filename = libraryBFilename))
+                exit()
+            compare(libraryA, libraryB)
+        else:
+            print("參數 {opt} 不可用。".format(opt))
+            print(optionsHelp)
+
+# 全局變量
+# 最新數據版本
+lastVersion = "0.2.0"
+# 起點時間
 zeroTime = datetime.fromtimestamp(0)
-
-# 處理命令行參數
-try:
-    opts, args = getopt.getopt(sys.argv[1:],
-                               "har:c:",
-                               ["help",
-                                "add",
-                                "report=",
-                                "compare="])
-except getopt.GetoptError as error:
-    print("Error: {error}".format(error = error))
-    print(optionsHelp)
-    exit()
-
-print(__doc__)
-if len(opts) == 0:
-    print("請在命令行中添加參數。")
-    print(optionsHelp)
-    exit()
-
-for opt, argv in opts:
-    if opt in ("-h", "--help"):
-        print(optionsHelp)
-    elif opt in ("-a", "--add"):
-        addLibrary()
-    elif opt in ("-r", "--report"):
-        libraryFilename = argv
-        libraryFilename = "./Library/" + libraryFilename
-        try:
-            libraryFile = open(libraryFilename, "rb")
-        except Exception as error:
-            print("ERROR: {error}".format(error = error))
-            exit()
-        library = pickle.load(libraryFile)
-        getReport(library)
-    elif opt in ("-c", "--compare"):
-        libraryA = getLibrary("iTunes Music Library.xml")
-        # 載入記錄
-        libraryBFilename = argv
-        libraryBFilename = "./Library/" + libraryBFilename
-        try:
-            libraryBFile = open(libraryBFilename, "rb")
-        except Exception as error:
-            print("ERROR: {error}".format(error = error))
-            exit()
-        libraryB = pickle.load(libraryBFile)
-        compare(libraryA, libraryB)
-    else:
-        print("參數 {opt} 不可用。".format(opt))
-        print(optionsHelp)
+if __name__ == '__main__':
+    main()

@@ -5,7 +5,7 @@ A collection of tools made by Lucka.
 * [神奇宝贝百科](/52Poké-Wiki/)
   * [服饰列表生成器](/52Poké-Wiki/ClothTableGenerator/)
 * [音乐](/Music/)
-  * [音乐库分析](/Music/LibraryAnaly/)
+  * [LibraryAnaly](/Music/LibraryAnaly/)
 
 ## Licence
 All the tools are [licensed under MIT](/LICENSE).
