@@ -4,7 +4,7 @@
 """
 LibraryAnaly for iTunes
 Author:     Lucka
-Version:    0.2.1
+Version:    0.2.2
 Licence:    MIT
 """
 
@@ -258,7 +258,9 @@ def getLibrary(filename):
                     album.totalTime += totalTime
                     album.trackCount += 1
                     album.playCount += playCount
-                    album.dateAdded = dateAdded
+                    # 應當選取較早的添加時間
+                    if album.dateAdded > dateAdded:
+                        album.dateAdded = dateAdded
                     album.playTime += totalTime * playCount
                     isAlbumExist = True
                     break
@@ -421,15 +423,27 @@ def compare(libraryA, libraryB):
     # trackID 可能會全部發生整數偏差，首先確定偏差
     print("正在檢測偏差…")
     deviation = 0
-    for musicB in libraryB.musicList:
-        if (libraryA.musicList[0].name == musicB.name and
-            libraryA.musicList[0].album == musicB.album):
-            deviation = libraryA.musicList[0].trackID - musicB.trackID
-            print("匹配成功：{trackIDB} -> {trackIDA}，偏差為{deviation}"
-                  .format(trackIDB = musicB.trackID,
-                          trackIDA = libraryA.musicList[0].trackID,
-                          deviation = deviation))
-            break
+    # 總共檢測5次
+    matchCount = 0
+    for oldMusic in oldLibrary.musicList:
+        didMatch = False;
+        for sampleMusic in sampleLibrary.musicList:
+            if (sampleMusic.name == oldMusic.name and
+                sampleMusic.album == oldMusic.album):
+                newDeviation = sampleMusic.trackID - oldMusic.trackID
+                didMatch = True
+                matchCount += 1
+                break
+        if didMatch:
+            if matchCount == 1:
+                deviation = newDeviation
+            else:
+                if deviation != newDeviation:
+                    print("匹配異常，偏差不一致")
+                    return
+            if matchCount == 5:
+                break
+    print("偏差檢測完成，偏差為 {deviation}".format(deviation = deviation))
     changedMusicList = newMusicList
 
     for musicA in libraryA.musicList:
@@ -596,12 +610,12 @@ def main():
                 exit()
             library = pickle.load(libraryFile)
             try:
-                version = library.version
+                dataVersion = library.version
             except Exception as error:
                 print("記錄文件 {filename} 數據版本過低，請運行數據更新工具"
                       .format(filename = libraryFilename))
                 exit()
-            if version != lastVersion:
+            if dataVersion != lastDataVersion:
                 print("記錄文件 {filename} 數據版本過低，請運行數據更新工具"
                       .format(filename = libraryFilename))
                 exit()
@@ -618,12 +632,12 @@ def main():
                 exit()
             libraryB = pickle.load(libraryBFile)
             try:
-                version = libraryB.version
+                dataVersion = libraryB.version
             except Exception as error:
                 print("記錄文件 {filename} 數據版本過低，請運行數據更新工具"
                       .format(filename = libraryBFilename))
                 exit()
-            if version != lastVersion:
+            if dataVersion != lastDataVersion:
                 print("記錄文件 {filename} 數據版本過低，請運行數據更新工具"
                       .format(filename = libraryBFilename))
                 exit()
@@ -634,7 +648,7 @@ def main():
 
 # 全局變量
 # 最新數據版本
-lastVersion = "0.2.1"
+lastDataVersion = "0.2.1"
 # 起點時間
 zeroTime = datetime.fromtimestamp(0)
 if __name__ == '__main__':

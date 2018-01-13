@@ -5,7 +5,7 @@
 LibraryAnaly for iTunes
 Record Update Tool
 Author:     Lucka
-Version:    0.2.1
+Version:    0.2.2
 Licence:    MIT
 """
 
@@ -291,7 +291,9 @@ def getSampleLibrary():
                     album.totalTime += totalTime
                     album.trackCount += 1
                     album.playCount += playCount
-                    album.dateAdded = dateAdded
+                    # 應當選取較早的添加時間
+                    if album.dateAdded > dateAdded:
+                        album.dateAdded = dateAdded
                     album.playTime += totalTime * playCount
                     isAlbumExist = True
                     break
@@ -364,8 +366,8 @@ def update(oldLibrary):
 
     changedMusicList = []
     version = detectLibreryVersion(oldLibrary)
-    print("開始更新數據 {oldVersion} -> {lastVersion}"
-          .format(oldVersion = version, lastVersion = lastVersion))
+    print("開始更新數據 {oldDataVersion} -> {lastDataVersion}"
+          .format(oldDataVersion = version, lastDataVersion = lastDataVersion))
 
     newMusicList = []
     newAlbumList = []
@@ -393,7 +395,8 @@ def update(oldLibrary):
                         album.totalTime += newMusic.totalTime
                         album.trackCount += 1
                         album.playCount += newMusic.playCount
-                        album.dateAdded = newMusic.dateAdded
+                        if album.dateAdded > newMusic.dateAdded:
+                            album.dateAdded = newMusic.dateAdded
                         album.playTime += newMusic.totalTime * newMusic.playCount
                         isAlbumExist = True
                         break
@@ -451,22 +454,22 @@ def main():
                 print("ERROR: {error}".format(error = error))
                 exit()
             oldLibrary = pickle.load(oldLibraryFile)
-            oldVersion = detectLibreryVersion(oldLibrary)
-            if oldVersion == lastVersion:
+            oldDataVersion = detectLibreryVersion(oldLibrary)
+            if oldDataVersion == lastDataVersion:
                 print("{filename} 的數據版本為 {version}，不需升級"
                       .format(filename = oldLibraryFilename,
-                              version = oldVersion))
+                              version = oldDataVersion))
             else:
                 print("{filename} 的數據版本為 {version}，需要升級"
                       .format(filename = oldLibraryFilename,
-                              version = oldVersion))
+                              version = oldDataVersion))
                 update(oldLibrary)
         else:
             print("參數 {opt} 不可用。".format(opt))
             print(optionsHelp)
 
 # 最新版本號
-lastVersion = "0.2.1"
+lastDataVersion = "0.2.1"
 # 起點時間
 zeroTime = datetime.fromtimestamp(0)
 if __name__ == '__main__':

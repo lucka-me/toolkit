@@ -82,11 +82,21 @@
 | `-h` `--help`    |              | 显示帮助文本
 
 ## Changelog
+### [0.2.2] - 2018-01-13
+#### Version
+| Tool / File      | Version
+| :--------------- | :------
+| Data Update Tool | 0.2.2
+| Data             | 0.2.1
+
+#### Changed
+- 专辑添加时间取其歌曲添加时间中最早的一个
+- 对比音乐库记录时偏差检测次数增加为5次
+
 ### [0.2.1] - 2018-01-12
 #### Version
 | Tool / File      | Version
 | :--------------- | :------
-| LibraryAnaly     | 0.2.1
 | Data Update Tool | 0.2.1
 | Data             | 0.2.1
 
@@ -104,7 +114,6 @@
 #### Version
 | Tool / File      | Version
 | :--------------- | :------
-| LibraryAnaly     | 0.2.0
 | Data Update Tool | 0.2.0
 | Data             | 0.2.0
 
