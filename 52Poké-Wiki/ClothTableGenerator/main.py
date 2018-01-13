@@ -4,7 +4,7 @@
 """
 神奇寶貝百科服飾列表生成器
 Author:     Lucka
-Version:    0.3.0
+Version:    0.3.2
 Licence:    MIT
 """
 
@@ -213,7 +213,7 @@ sex = sex.upper()
 while sex != "M" and sex != "F":
     print("警告: 輸入錯誤")
     sex = input("請輸入性別 (M/F): ")
-    willGetImg = willGetImg.upper()
+    sex = sex.upper()
 if sex == "M":
     versionCode = "US"
     catalogList = ["上衣", "裤子", "袜子", "鞋子", "包包", "帽子", "眼镜", "发饰"]

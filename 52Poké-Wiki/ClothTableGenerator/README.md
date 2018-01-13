@@ -11,18 +11,22 @@
   * [Wand](http://docs.wand-py.org/en/0.4.4/ "Wand")
 
 ### Files
-|      文件名      |            说明             |
-| :-------------- | :-------------------------- |
-| source.html     | HTML 文件，需要手动截选相应部分 |
-| type_ch.txt     | 服饰类型中文文本              |
-| type_jp.txt     | 服饰类型日文文本              |
-| type_en.txt     | 服饰类型英文文本              |
-| color_ch.txt    | 颜色名称中文文本              |
-| color_en.txt    | 颜色名称中文文本              |
-| location_ch.txt | 地点名称中文文本              |
-| location_en.txt | 地点名称中文文本              |
+| Filename        | Description
+| :-------------- | :--------------------------
+| source.html     | HTML 文件，需要手动截选相应部分
+| type_ch.txt     | 服饰类型中文文本
+| type_jp.txt     | 服饰类型日文文本
+| type_en.txt     | 服饰类型英文文本
+| color_ch.txt    | 颜色名称中文文本
+| color_en.txt    | 颜色名称中文文本
+| location_ch.txt | 地点名称中文文本
+| location_en.txt | 地点名称中文文本
 
 ## Changelog
+### [0.3.2] - 2017-12-22
+#### Fixed
+- 设定性别时可能无法成功
+
 ### [0.3.1] - 2017-12-22
 #### Fixed
 - 显示及输出价格无千分位符
