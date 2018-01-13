@@ -5,7 +5,7 @@
 LibraryAnaly for iTunes
 Record Update Tool
 Author:     Lucka
-Version:    0.2.2
+Version:    0.3.0
 Licence:    MIT
 """
 
@@ -45,11 +45,18 @@ class Music:
 
     Version 0.2.0
     對應版本
-        MusicAnaly  0.1.0   -   0.2.1
-        Library     0.1.0   -   0.2.1
+        MusicAnaly  0.1.0   -   0.2.2
+        Library     0.1.0   -   0.2.2
     新增成員變量
         genre       str 音樂類型
         location    str 音頻文件路徑
+
+    Version 0.3.0
+    對應版本
+        MusicAnaly  0.1.0   -   0.3.0
+        Library     0.1.0   -   0.3.0
+    新增成員變量
+        albumArtist str         專輯藝術家
     """
     def __init__(self,
                  trackID,
@@ -57,7 +64,7 @@ class Music:
                  discNumber, trackNumber,
                  year, dateAdded,
                  playCount,
-                 name, artist, album, genre,
+                 name, artist, albumArtist, album, genre,
                  location):
         self.trackID = trackID
         self.totalTime = totalTime
@@ -68,6 +75,7 @@ class Music:
         self.playCount = playCount
         self.name = name
         self.artist = artist
+        self.albumArtist = albumArtist
         self.album = album
         self.genre = genre
         self.location = location
@@ -89,21 +97,29 @@ class Album:
 
     Version 0.2.1
     對應版本
-        MusicAnaly  0.1.0   -   0.2.1
+        MusicAnaly  0.1.0   -   0.2.2
         Library     0.1.0   -   0.2.1
     新增成員變量
         playTime    timedelta   總播放時長
+
+    Version 0.3.0
+    對應版本
+        MusicAnaly  0.1.0   -   0.3.0
+        Library     0.1.0   -   0.3.0
+    新增成員變量
+        artist      str         專輯藝術家
     """
     def __init__(self,
                  albumID,
                  totalTime,
-                 name,
+                 name, artist,
                  trackCount,
                  dateAdded,
                  playCount, playTime):
         self.albumID = albumID
         self.totalTime = totalTime
         self.name = name
+        self.artist = artist
         self.trackCount = trackCount
         self.dateAdded = dateAdded
         self.playCount = playCount
@@ -135,9 +151,15 @@ class MusicLibrary:
         MusicAnaly  0.1.0   -   0.2.1
         Music       0.2.0
         Album       0.2.1
+
+    Version 0.3.0
+    對應版本
+        MusicAnaly  0.1.0   -   0.3.0
+        Music       0.3.0
+        Album       0.3.0
     """
     def __init__(self, musicList, albumList, date):
-        self.version = "0.2.1"
+        self.version = "0.3.0"
         self.musicList = musicList
         self.albumList = albumList
         self.date = date
@@ -177,32 +199,6 @@ def getSampleLibrary():
     libraryXMLFile.readline()
 
     # 讀取
-    """
-    一個歌曲信息示例
-    <key>1152</key>
-    <dict>
-        <key>Track ID</key><integer>1152</integer>
-        ...
-        <key>Total Time</key><integer>188995</integer>
-        <key>Disc Number</key><integer>1</integer>
-        <key>Track Number</key><integer>5</integer>
-        <key>Year</key><integer>1999</integer>
-        ...
-        <key>Date Added</key><date>2013-06-13T14:51:02Z</date>
-        ...
-        <key>Play Count</key><integer>96</integer>
-        ...
-        <key>Name</key><string>The Imperial March</string>
-        <key>Artist</key><string>John Williams</string>
-        ...
-        <key>Album</key><string>John Williams Conducts Music from the Star Wars Saga</string>
-        <key>Genre</key><string>Soundtrack</string>
-        ...
-        <key>Location</key><string>file:///Media/Music/English/John%20Williams%20Conducts%20Music%20from%20the%20Star%20Wars%20Saga/05.%20The%20Imperial%20March.mp3</string>
-        ...
-    </dict>
-    """
-
     # 音樂列表
     musicList = []
     # 專輯列表
@@ -219,6 +215,7 @@ def getSampleLibrary():
         playCount = 0
         name = ""
         artist = ""
+        albumArtist = ""
         album = ""
         genre = ""
         while "</dict>" not in libraryLine:
@@ -258,6 +255,10 @@ def getSampleLibrary():
                 libraryLine = libraryLine.replace("\t\t\t<key>Artist</key><string>", "")
                 libraryLine = libraryLine.replace("</string>\n", "")
                 artist = libraryLine
+            if "<key>Album Artist</key>" in libraryLine:
+                libraryLine = libraryLine.replace("\t\t\t<key>Album Artist</key><string>", "")
+                libraryLine = libraryLine.replace("</string>\n", "")
+                albumArtist = libraryLine
             if "<key>Album</key>" in libraryLine:
                 libraryLine = libraryLine.replace("\t\t\t<key>Album</key><string>", "")
                 libraryLine = libraryLine.replace("</string>\n", "")
@@ -281,13 +282,14 @@ def getSampleLibrary():
                              discNumber, trackNumber,
                              year, dateAdded,
                              playCount,
-                             name, artist, album, genre,
+                             name, artist, albumArtist, album, genre,
                              location)
             musicList.append(newMusic)
             # 更新專輯列表
             isAlbumExist = False
             for album in albumList:
-                if album.name == newMusic.album:
+                if (album.name == newMusic.album and
+                    album.artist == newMusic.albumArtist):
                     album.totalTime += totalTime
                     album.trackCount += 1
                     album.playCount += playCount
@@ -300,7 +302,7 @@ def getSampleLibrary():
             if not isAlbumExist:
                 newAlbum = Album(trackID,
                                  totalTime,
-                                 album,
+                                 album, albumArtist,
                                  1,
                                  dateAdded,
                                  playCount,
@@ -339,6 +341,8 @@ def update(oldLibrary):
     print("正在獲取最新版的樣本⋯")
     sampleLibrary = getSampleLibrary()
     print("獲取成功")
+    """
+    # trackID 存在問題，暫時棄用
     # 檢測 trackID 的偏差
     print("正在檢測偏差…")
     deviation = 0
@@ -363,7 +367,7 @@ def update(oldLibrary):
             if matchCount == 5:
                 break
     print("偏差檢測完成，偏差為 {deviation}".format(deviation = deviation))
-
+    """
     changedMusicList = []
     version = detectLibreryVersion(oldLibrary)
     print("開始更新數據 {oldDataVersion} -> {lastDataVersion}"
@@ -373,17 +377,21 @@ def update(oldLibrary):
     newAlbumList = []
     for sampleMusic in sampleLibrary.musicList:
         for oldMusic in oldLibrary.musicList:
-            if sampleMusic.trackID == oldMusic.trackID + deviation:
+            if (sampleMusic.name == oldMusic.name and
+                sampleMusic.album == oldMusic.album):
                 # 加入歌曲列表
+                if "硝子の花園" in sampleMusic.name:
+                    print("{}".format(oldMusic.dateAdded))
                 newMusic = Music(sampleMusic.trackID,
                                  sampleMusic.totalTime,
                                  sampleMusic.discNumber,
                                  sampleMusic.trackNumber,
                                  sampleMusic.year,
-                                 sampleMusic.dateAdded,
+                                 oldMusic.dateAdded,
                                  oldMusic.playCount,
                                  sampleMusic.name,
                                  sampleMusic.artist,
+                                 sampleMusic.albumArtist,
                                  sampleMusic.album,
                                  sampleMusic.genre,
                                  sampleMusic.location)
@@ -403,12 +411,14 @@ def update(oldLibrary):
                 if not isAlbumExist:
                     newAlbum = Album(newMusic.trackID,
                                      newMusic.totalTime,
-                                     newMusic.album,
+                                     newMusic.album, newMusic.albumArtist,
                                      1,
                                      newMusic.dateAdded,
                                      newMusic.playCount,
                                      newMusic.totalTime * newMusic.playCount)
                     newAlbumList.append(newAlbum)
+                break
+
     newLibrary = MusicLibrary(newMusicList,
                               newAlbumList,
                               oldLibrary.date)
@@ -469,7 +479,7 @@ def main():
             print(optionsHelp)
 
 # 最新版本號
-lastDataVersion = "0.2.1"
+lastDataVersion = "0.3.0"
 # 起點時間
 zeroTime = datetime.fromtimestamp(0)
 if __name__ == '__main__':

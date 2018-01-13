@@ -17,6 +17,7 @@
 | `playCount`   | 播放次数
 | `name`        | 歌曲标题
 | `artist`      | 艺术家
+| `albumArtist` | 专辑艺术家<sup>`0.3.0`</sup>
 | `album`       | 专辑名称
 | `genre`       | 音乐类型<sup>`0.2.0`</sup>
 | `location`    | 音频文件路径<sup>`0.2.0`</sup>
@@ -28,6 +29,7 @@
 | `albumID`    | 专辑唯一序列号
 | `totalTime`  | 专辑总时长
 | `name`       | 专辑
+| `artist`     | 专辑艺术家<sup>`0.3.0`</sup>
 | `trackCount` | 音轨数量
 | `dateAdded`  | 加入音乐库的时间
 | `playCount`  | 总播放次数
@@ -82,6 +84,35 @@
 | `-h` `--help`    |              | 显示帮助文本
 
 ## Changelog
+### [0.3.0] - 2018-01-13
+#### Version
+| Tool / File      | Version
+| :--------------- | :------
+| Data Update Tool | 0.3.0
+| Data             | 0.3.0
+
+#### Added
+- 音乐记录中增加以下项目：
+
+| Key Name      | Description
+| :------------ | :----------
+| `albumArtist` | 专辑艺术家
+
+- 专辑记录中增加以下项目：
+
+| Key Name | Description
+| :------- | :----------
+| `artist` | 专辑艺术家
+
+#### Changed
+- 因为 `trackID` 存在问题，暂时用歌曲名称和专辑名称作为匹配的要素
+- 暂时取消 `trackID` 的偏差检测
+
+#### Fixed
+- 被删除歌曲的 `trackID` 可能被新添加歌曲使用，造成对比记录时出现严重的统计错误
+- 被删除又重新加入的歌曲在对比记录时会被统计两次
+- 当发生变化的歌曲和专辑少于10个时会出现错误
+
 ### [0.2.2] - 2018-01-13
 #### Version
 | Tool / File      | Version
@@ -91,7 +122,7 @@
 
 #### Changed
 - 专辑添加时间取其歌曲添加时间中最早的一个
-- 对比音乐库记录时偏差检测次数增加为5次
+- 对比音乐库记录时偏差检测的次数增加为5次
 
 ### [0.2.1] - 2018-01-12
 #### Version
