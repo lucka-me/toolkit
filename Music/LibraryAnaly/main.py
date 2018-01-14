@@ -4,7 +4,7 @@
 """
 LibraryAnaly for iTunes
 Author:     Lucka
-Version:    0.3.0
+Version:    0.3.1
 Licence:    MIT
 """
 
@@ -458,7 +458,9 @@ def compare(libraryA, libraryB):
         isMatched = False
         for musicB in libraryB.musicList:
             if (musicA.name == musicB.name and
-                musicA.album == musicB.album):
+                musicA.album == musicB.album and
+                musicA.trackNumber == musicB.trackNumber and
+                musicA.discNumber == musicB.discNumber):
                 if musicA.playCount > musicB.playCount:
                     changedMusic = musicA
                     changedMusic.playCount = changedMusic.playCount - musicB.playCount
@@ -474,8 +476,6 @@ def compare(libraryA, libraryB):
             totalPlayCount += musicA.playCount
             totalPlayTime += musicA.totalTime * musicA.playCount
             break
-    # 發生變化的專輯列表
-    # albumID 與專輯第一首歌 trackID 一致，因此存在同樣的偏差
     for albumA in libraryA.albumList:
         isMatched = False
         for albumB in libraryB.albumList:

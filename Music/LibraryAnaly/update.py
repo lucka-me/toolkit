@@ -5,13 +5,15 @@
 LibraryAnaly for iTunes
 Record Update Tool
 Author:     Lucka
-Version:    0.3.0
+Version:    0.3.1
 Licence:    MIT
 """
 
 # 命令行參數說明
 optionsHelp = """可使用的命令行參數：
     \033[1m-u --update  <filename>\033[0m   更新指定記錄的數據文件
+    \033[1m--force\033[0m                   強制更新
+    \033[1m--auto\033[0m                    自動處理疑似相同的歌曲
     \033[1m-h --help\033[0m                 顯示本幫助文本
 """
 
@@ -53,7 +55,7 @@ class Music:
 
     Version 0.3.0
     對應版本
-        MusicAnaly  0.1.0   -   0.3.0
+        MusicAnaly  0.1.0   -   0.3.1
         Library     0.1.0   -   0.3.0
     新增成員變量
         albumArtist str         專輯藝術家
@@ -104,7 +106,7 @@ class Album:
 
     Version 0.3.0
     對應版本
-        MusicAnaly  0.1.0   -   0.3.0
+        MusicAnaly  0.1.0   -   0.3.1
         Library     0.1.0   -   0.3.0
     新增成員變量
         artist      str         專輯藝術家
@@ -154,7 +156,7 @@ class MusicLibrary:
 
     Version 0.3.0
     對應版本
-        MusicAnaly  0.1.0   -   0.3.0
+        MusicAnaly  0.1.0   -   0.3.1
         Music       0.3.0
         Album       0.3.0
     """
@@ -331,18 +333,18 @@ def detectLibreryVersion(library):
         version = "0.1.0"
     return version
 
-def update(oldLibrary):
+def update(oldLibrary ,isAuto):
     """
     更新音樂庫數據版本
     參數列表:
         oldLibrary  MusicLibrary    需要升級的音樂庫
+        isAuto      bool            是否自動確認疑似相同歌曲
     """
     print("開始更新")
     print("正在獲取最新版的樣本⋯")
     sampleLibrary = getSampleLibrary()
     print("獲取成功")
-    """
-    # trackID 存在問題，暫時棄用
+
     # 檢測 trackID 的偏差
     print("正在檢測偏差…")
     deviation = 0
@@ -367,7 +369,7 @@ def update(oldLibrary):
             if matchCount == 5:
                 break
     print("偏差檢測完成，偏差為 {deviation}".format(deviation = deviation))
-    """
+
     changedMusicList = []
     version = detectLibreryVersion(oldLibrary)
     print("開始更新數據 {oldDataVersion} -> {lastDataVersion}"
@@ -377,11 +379,35 @@ def update(oldLibrary):
     newAlbumList = []
     for sampleMusic in sampleLibrary.musicList:
         for oldMusic in oldLibrary.musicList:
+            if (sampleMusic.trackID == oldMusic.trackID + deviation and
+                sampleMusic.totalTime == oldMusic.totalTime and
+                (sampleMusic.name != oldMusic.name or
+                 sampleMusic.album != oldMusic.album)):
+                if not isAuto:
+                    print("檢測到疑似為同一首歌曲的兩首歌曲：")
+                    print("\t樣本數據：\n\t\t歌曲名稱：{name}\n\t\t專輯名稱:{album}"
+                          .format(name = sampleMusic.name,
+                                  album = sampleMusic.album))
+                    print("\t舊數據：\n\t\t歌曲名稱：{name}\n\t\t專輯名稱:{album}"
+                          .format(name = oldMusic.name,
+                                  album = oldMusic.album))
+                    answer = input("是否需要更新名稱和專輯為樣本數據 (Y/N): ")
+                    answer = answer.upper()
+                    while answer != "Y" and answer != "N" and answer != "":
+                        print("警告: 輸入錯誤")
+                        answer = input("是否需要更新名稱和專輯為樣本數據 (Y/N): ")
+                        answer = answer.upper()
+                    if answer == "Y" or answer == "":
+                        oldMusic.name = sampleMusic.name
+                        oldMusic.album = sampleMusic.album
+                else:
+                    oldMusic.name = sampleMusic.name
+                    oldMusic.album = sampleMusic.album
             if (sampleMusic.name == oldMusic.name and
-                sampleMusic.album == oldMusic.album):
+                sampleMusic.album == oldMusic.album and
+                sampleMusic.trackNumber == oldMusic.trackNumber and
+                sampleMusic.discNumber == oldMusic.discNumber):
                 # 加入歌曲列表
-                if "硝子の花園" in sampleMusic.name:
-                    print("{}".format(oldMusic.dateAdded))
                 newMusic = Music(sampleMusic.trackID,
                                  sampleMusic.totalTime,
                                  sampleMusic.discNumber,
@@ -440,7 +466,7 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:],
                                    "hu:",
-                                   ["help", "update="])
+                                   ["help", "update=", "force", "auto"])
     except getopt.GetoptError as error:
         print("Error: {error}".format(error = error))
         print(optionsHelp)
@@ -452,31 +478,45 @@ def main():
         print(optionsHelp)
         exit()
 
+    isForced = False
+    isAuto = False
+
     for opt, argv in opts:
         if opt in ("-h", "--help"):
             print(optionsHelp)
         elif opt in ("-u", "--update"):
             oldLibraryFilename = argv
             oldLibraryFilename = "./Library/" + oldLibraryFilename
-            try:
-                oldLibraryFile = open(oldLibraryFilename, "rb")
-            except Exception as error:
-                print("ERROR: {error}".format(error = error))
-                exit()
-            oldLibrary = pickle.load(oldLibraryFile)
-            oldDataVersion = detectLibreryVersion(oldLibrary)
-            if oldDataVersion == lastDataVersion:
-                print("{filename} 的數據版本為 {version}，不需升級"
-                      .format(filename = oldLibraryFilename,
-                              version = oldDataVersion))
-            else:
-                print("{filename} 的數據版本為 {version}，需要升級"
-                      .format(filename = oldLibraryFilename,
-                              version = oldDataVersion))
-                update(oldLibrary)
+        elif opt in ("--force"):
+            isForced= True
+        elif opt in ("--auto"):
+            isAuto = True
         else:
             print("參數 {opt} 不可用。".format(opt))
             print(optionsHelp)
+
+    try:
+        oldLibraryFile = open(oldLibraryFilename, "rb")
+    except Exception as error:
+        print("ERROR: {error}".format(error = error))
+        exit()
+    oldLibrary = pickle.load(oldLibraryFile)
+    oldDataVersion = detectLibreryVersion(oldLibrary)
+    if oldDataVersion == lastDataVersion:
+        if isForced:
+            print("{filename} 的數據版本為 {version}，強制升級"
+                  .format(filename = oldLibraryFilename,
+                          version = oldDataVersion))
+            update(oldLibrary ,isAuto)
+        else:
+            print("{filename} 的數據版本為 {version}，無須升級"
+                  .format(filename = oldLibraryFilename,
+                          version = oldDataVersion))
+    else:
+        print("{filename} 的數據版本為 {version}，需要升級"
+              .format(filename = oldLibraryFilename,
+                      version = oldDataVersion))
+        update(oldLibrary, isAuto)
 
 # 最新版本號
 lastDataVersion = "0.3.0"

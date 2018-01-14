@@ -78,12 +78,30 @@
 数据更新工具的主程序文件为 `update.py`，需要 `iTunes Music Library.xml` 文件作为更新样本。
 
 #### Command Line Option List
-| Opt / Long Opt   | Args         | Note
-| :--------------- | :----------- | :---
-| `-u` `--update`  | `<filename>` | 更新制定记录的数据文件
-| `-h` `--help`    |              | 显示帮助文本
+| Opt / Long Opt  | Args         | Note
+| :-------------- | :----------- | :---
+| `-u` `--update` | `<filename>` | 更新制定记录的数据文件
+| `--force`       |              | 强制升级<sup>`0.3.1`</sup>
+| `--auto`        |              | 疑似相同歌曲改为自动确认<sup>`0.3.1`</sup>
+| `-h` `--help`   |              | 显示帮助文本
 
 ## Changelog
+### [0.3.1] - 2018-01-14
+#### Version
+| Tool / File      | Version
+| :--------------- | :------
+| Data Update Tool | 0.3.1
+| Data             | 0.3.0
+
+# Added
+- 数据更新工具在匹配歌曲时将提示疑似相同歌曲，由供用户决定是否作为相同歌曲更新
+  - 自动确认命令 `--auto`
+- 数据更新工具增加强制更新命令 `--force`
+
+# Changed
+- 优化代码
+- 清除测试代码
+
 ### [0.3.0] - 2018-01-13
 #### Version
 | Tool / File      | Version
