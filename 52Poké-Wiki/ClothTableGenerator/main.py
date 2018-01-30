@@ -4,7 +4,7 @@
 """
 神奇寶貝百科服飾列表生成器
 Author:     Lucka
-Version:    0.3.2
+Version:    0.4.0
 Licence:    MIT
 """
 
@@ -75,9 +75,17 @@ def getImg(imgSN, typeSN, colorSN):
     參數列表:
         imgSN:      int     Serebii.net 上的圖片編號
         typeSN:     int     服裝類型序列號
+                            -1: 未識別
         colorSN:    int     顏色類型序列號
                             -1: 無顏色類型
     """
+
+    # 聲明全局變量
+    global sex
+    global cropY
+    global imgWidth
+    global imgHeight
+    global typeListCH
 
     print("正在處理圖片…")
 
@@ -94,18 +102,29 @@ def getImg(imgSN, typeSN, colorSN):
         color = ""
     else:
         color = " {0}".format(colorListCH[colorSN])
-    fileName = "USUM {0} {1}{2}.png".format(sex, typeListCH[typeSN], color)
+    if typeSN == -1:
+        # 未識別者直接以 imgSN 命名文件
+        fileName = "USUM {0} {1}{2}.png".format("男生" if sex == "M" else "女生", imgSN, color)
+    else:
+        fileName = "USUM {0} {1}{2}.png".format("男生" if sex == "M" else "女生", typeListCH[typeSN], color)
 
     # 獲取圖片
     print("正在下載: {0}".format(url))
-    urllib.request.urlretrieve(url, fileName)
-    print("下載完成: {0}".format(fileName))
+    try:
+        urllib.request.urlretrieve(url, fileName)
+        print("下載完成: {0}".format(fileName))
+    except Exception as error:
+        print("錯誤: {error}".format(error = error))
 
-    with Image(filename = fileName) as image:
-        cropX = int((image.width - imgWidth) / 2)
-        image.crop(cropX, cropY, width = imgWidth, height = imgHeight)
-        image.save(filename = fileName)
-    print("圖片處理完成。")
+    try:
+        with Image(filename = fileName) as image:
+            cropX = int((image.width - imgWidth) / 2)
+            image.crop(cropX, cropY, width = imgWidth, height = imgHeight)
+            image.save(filename = fileName)
+            print("圖片處理完成。")
+    except Exception as error:
+        print("錯誤: {error}".format(error = error))
+
 
 
 def getColumn(rowspan, typeSN, colorSN,
@@ -132,6 +151,14 @@ def getColumn(rowspan, typeSN, colorSN,
     返回:
         String      Wiki 各式的表格行代碼
     """
+    # 聲明全局變量
+    global sex
+    global imgWidth
+    global typeListCH
+    global typeListJP
+    global typeListEN
+    global locationListCH
+    global colorListCH
 
     # 圖樣列和顏色列不會被合併
     # 圖樣列
@@ -140,7 +167,7 @@ def getColumn(rowspan, typeSN, colorSN,
     else:
         color = " {0}".format(colorListCH[colorSN])
     imgRow = ("[[File:USUM {0} {1}{2}.png|{3}px]]"
-              .format(sex, typeListCH[typeSN], color, imgWidth)
+              .format("男生" if sex == "M" else "女生", typeListCH[typeSN], color, imgWidth)
     )
 
     # 顏色列樣式
@@ -202,219 +229,255 @@ def getColumn(rowspan, typeSN, colorSN,
     return result
 
 
-# 主程序
-print(__doc__)
+def main():
+    # 主程序
+    print(__doc__)
 
+    # 聲明全局變量
+    global sex
+    global cropY
+    global imgWidth
+    global imgHeight
+    global typeListCH
+    global typeListJP
+    global typeListEN
+    global locationListCH
+    global colorListCH
 
-# 设置基本参数
-print("請输入基本參數:")
-sex = input("請輸入性別 (M/F): ")
-sex = sex.upper()
-while sex != "M" and sex != "F":
-    print("警告: 輸入錯誤")
-    sex = input("請輸入性別 (M/F): ")
-    sex = sex.upper()
-if sex == "M":
-    versionCode = "US"
-    catalogList = ["上衣", "裤子", "袜子", "鞋子", "包包", "帽子", "眼镜", "发饰"]
-else:
-    versionCode = "UM"
-    catalogList = ["上衣", "裤子、裙子", "袜子", "鞋子", "包包", "帽子", "眼镜", "发饰"]
-
-print("請選擇服飾類別:")
-for index in range(0, len(catalogList)):
-    print("{0}:\t{1}".format(index, catalogList[index]))
-catalogSN = input("請輸入序號 (0~{0}): ".format(len(catalogList) - 1))
-catalogSN = int(catalogSN)
-while catalogSN < 0 or catalogSN >= len(catalogList):
-    print("警告: 輸入錯誤")
-    catalogSN = input("請輸入序號 (0~{0}): ".format(len(catalogList) - 1))
-    catalogSN = int(catalogSN)
-# 確定圖片尺寸和裁切尺寸
-# 裁切圖片
-# 0 上衣:     96x96+(x)+50
-# 1 褲裙:     96x96+(x)+105
-# 2 襪子:     96x48+(x)+182
-# 3 鞋子:     96x48+(x)+182
-# 4 包包:     96x96+(x)+50
-# 5 帽子:     64x64+(x)+8
-# 6 眼鏡:     64x64+(x)+8
-# 7 髮飾:     64x64+(x)+8
-if catalogSN > 4:
-    imgWidth = 64
-    imgHeight = 64
-    cropY = 8
-else:
-    imgWidth = 96
-    if catalogSN == 2 or catalogSN == 3:
-        imgHeight = 48
-        cropY = 182
-    else:
-        imgHeight = 96
-        if catalogSN == 1:
-            cropY = 105
-        else:
-            cropY = 50
-
-willGetImg = input("是否需要下載圖片 (Y/N): ")
-willGetImg = willGetImg.upper()
-while willGetImg != "Y" and willGetImg != "N":
-    print("警告: 輸入錯誤")
+    # 设置基本参数
+    print("請输入基本參數:")
     willGetImg = input("是否需要下載圖片 (Y/N): ")
     willGetImg = willGetImg.upper()
-if willGetImg == "Y":
-    willGetImg = True
-else:
-    willGetImg = False
-
-print("初始化完畢，開始處理。")
-
-
-# 設置計時器
-startTime = time.time()
-
-
-# 讀取譯名列表
-print("正在讀取文本文件⋯")
-typeListCH = open('type_ch.txt').read().splitlines()
-typeListJP = open('type_jp.txt').read().splitlines()
-typeListEN = open('type_en.txt').read().splitlines()
-colorListCH = open('color_ch.txt').read().splitlines()
-colorListEN = open('color_en.txt').read().splitlines()
-locationListCH = open('location_ch.txt').read().splitlines()
-locationListEN = open('location_en.txt').read().splitlines()
-print("讀取完畢。")
-
-
-# 處理原文件
-print("正在處理 HTML 文件⋯")
-sourceFile = open("source.html", "r")
-sourceString = sourceFile.read()
-sourceFile.close()
-sourceString = sourceString.replace("<tr><td class=\"fooinfo\"><a href=\"clothing/male/", "\n")
-sourceString = sourceString.replace(".png\" rel=\"lightbox[ranger3]\" title=\"Clothing\"><img src=\"clothing/male/", "\n")
-sourceString = sourceString.replace(".jpg\" border=\"0\" /></a></td><td class=\"fooinfo\">", "\n")
-sourceString = sourceString.replace("</td><td class=\"fooinfo\">", "\n")
-sourceString = sourceString.replace("</td></tr>", "\n")
-## 處理原生錯誤
-sourceString = sourceString.replace("Grey", "Gray")
-sourceString = sourceString.replace("\nNavy\n", "\nNavy Blue\n")
-sourceString = sourceString.replace("Hau'oli", "Hau’oli")
-sourceString = sourceString.replace(" GI ", " Gi ")
-
-targetFile = open("list.txt", "w")
-targetFile.write(sourceString)
-targetFile.close()
-print("處理完畢，已生成 list.txt 文件。")
-
-
-# 讀取列表文件並生成列表及下載圖片
-if willGetImg:
-    print("正在生成列表及下載圖片⋯")
-else:
-    print("正在生成列表⋯")
-
-clothList = []
-listFile = open("list.txt", "r")
-# 錯誤列表
-errorList = []
-# 總價統計
-priceSum = 0
-
-while True:
-    """
-    list.txt 中一件服飾對應十行：
-
-    ImgSN
-    ImgSN       重複
-    Type        服飾種類如Ｔ恤等
-    Color
-    Catalog     服飾類型如上衣、褲、裙等
-    Price
-    Location
-    Version
-
-    注意首位各有一空行
-    """
-    # 第1行若為空則退出循環
-    line = listFile.readline()
-    if len(line) == 0:
-        break
-
-    print("正在處理：")
-    print("序號:\t\t{0}".format(len(clothList) + 1))
-    line = listFile.readline()
-    imgSN = int(line)
-    print("圖片編號:\t{0}".format(imgSN))
-
-    listFile.readline()
-
-    line = listFile.readline()
-    clothType = line.replace("\n", "")
-    typeSN = getFullyMatchedSN(clothType, typeListEN)
-    if typeSN == -1:
-        print("警告: 未找到對應服飾，原文: {0}".format(clothType))
+    while willGetImg != "Y" and willGetImg != "N":
+        print("警告: 輸入錯誤")
+        willGetImg = input("是否需要下載圖片 (Y/N): ")
+        willGetImg = willGetImg.upper()
+    if willGetImg == "Y":
+        willGetImg = True
     else:
-        print("服飾種類:\t{0} -> {1}".format(clothType, typeListCH[typeSN]))
+        willGetImg = False
 
-    line = listFile.readline()
-    color = line.replace("\n", "")
-    if color == "":
-        colorSN = -1
-        print("顏色:\t\t無")
+    print("初始化完畢，開始處理。")
+
+
+    # 設置計時器
+    startTime = time.time()
+
+
+    # 讀取譯名列表
+    print("正在讀取文本文件⋯")
+    typeListCH = open('type_ch.txt').read().splitlines()
+    typeListJP = open('type_jp.txt').read().splitlines()
+    typeListEN = open('type_en.txt').read().splitlines()
+    colorListCH = open('color_ch.txt').read().splitlines()
+    colorListEN = open('color_en.txt').read().splitlines()
+    locationListCH = open('location_ch.txt').read().splitlines()
+    locationListEN = open('location_en.txt').read().splitlines()
+    print("讀取完畢。")
+
+
+    # 處理原文件
+    print("正在處理 HTML 文件⋯")
+    sourceFile = open("source.html", "r")
+    sourceString = sourceFile.read()
+    sourceFile.close()
+    # 檢測性別
+    sex = "M" if "clothing/male/" in sourceString else "F"
+    versionCode = "US" if sex == "M" else "UM"
+    # 檢測類型、圖片尺寸和裁切尺寸
+    # 裁切圖片
+    # 0 上衣:     96x96+(x)+50
+    # 1 褲裙:     96x96+(x)+105
+    # 2 襪子:     96x48+(x)+182
+    # 3 鞋子:     96x48+(x)+182
+    # 4 包包:     96x96+(x)+50
+    # 5 帽子:     64x64+(x)+8
+    # 6 眼鏡:     64x64+(x)+8
+    # 7 髮飾:     64x64+(x)+8
+    catalogType = ""
+    if "<td class=\"fooinfo\">Shirt</td>" in sourceString:
+        catalogType = "上衣"
+        imgWidth = 96
+        imgHeight = 96
+        cropY = 50
+    elif "<td class=\"fooinfo\">Trousers</td>" in sourceString:
+        if sex == "M":
+            catalogType = "裤子"
+        else:
+            catalogType = "裤子、裙子"
+        imgWidth = 96
+        imgHeight = 96
+        cropY = 105
+    elif "<td class=\"fooinfo\">Socks</td>" in sourceString:
+        catalogType = "袜子"
+        imgWidth = 96
+        imgHeight = 48
+        cropY = 182
+    elif "<td class=\"fooinfo\">Shoes</td>" in sourceString:
+        catalogType = "鞋子"
+        imgWidth = 96
+        imgHeight = 48
+        cropY = 182
+    elif "<td class=\"fooinfo\">Bag</td>" in sourceString:
+        catalogType = "包包"
+        imgWidth = 96
+        imgHeight = 96
+        cropY = 50
+    elif "<td class=\"fooinfo\">Hat</td>" in sourceString:
+        catalogType = "帽子"
+        imgWidth = 64
+        imgHeight = 64
+        cropY = 8
+    elif "<td class=\"fooinfo\">Glasses</td>" in sourceString:
+        catalogType = "眼镜"
+        imgWidth = 64
+        imgHeight = 64
+        cropY = 8
+    elif "<td class=\"fooinfo\">Accessories</td>" in sourceString:
+        if sex == "F":
+            print("錯誤: 識別為男生但類型為髮飾。")
+            exit()
+        catalogType = "发饰"
+        imgWidth = 64
+        imgHeight = 64
+        cropY = 8
     else:
-        colorSN = getFullyMatchedSN(color, colorListEN)
-        print("顏色:\t\t{0} -> {1}".format(color, colorListCH[colorSN]))
+        print("錯誤: 類型檢測失敗")
+        exit()
+    print("識別為{sex}的{catalogType}"
+          .format(sex = "男生" if sex == "M" else "女生",
+                  catalogType = catalogType))
+    sourceString = sourceString.replace("<tr><td class=\"fooinfo\"><a href=\"clothing/male/", "\n")
+    sourceString = sourceString.replace("<tr><td class=\"fooinfo\"><a href=\"clothing/female/", "\n")
+    sourceString = sourceString.replace(".png\" rel=\"lightbox[ranger3]\" title=\"Clothing\"><img src=\"clothing/male/", "\n")
+    sourceString = sourceString.replace(".png\" rel=\"lightbox[ranger3]\" title=\"Clothing\"><img src=\"clothing/female/", "\n")
+    sourceString = sourceString.replace(".jpg\" border=\"0\" /></a></td><td class=\"fooinfo\">", "\n")
+    sourceString = sourceString.replace("</td><td class=\"fooinfo\">", "\n")
+    sourceString = sourceString.replace("</td></tr>", "\n")
+    ## 處理原生錯誤
+    sourceString = sourceString.replace("Grey", "Gray")
+    sourceString = sourceString.replace("\nNavy\n", "\nNavy Blue\n")
+    sourceString = sourceString.replace("Hau'oli", "Hau’oli")
+    sourceString = sourceString.replace(" GI ", " Gi ")
 
-    listFile.readline()
+    targetFile = open("list.txt", "w")
+    targetFile.write(sourceString)
+    targetFile.close()
+    print("處理完畢，已生成 list.txt 文件。")
 
-    line = listFile.readline()
-    if line.replace("\n", "").isdigit():
-        price = int(line)
+
+    # 讀取列表文件並生成列表及下載圖片
+    if willGetImg:
+        print("正在生成列表及下載圖片⋯")
     else:
-        price = 0
-    print("價格:\t\t{0:,}".format(price))
+        print("正在生成列表⋯")
+    print("請注意，下列信息可能出現錯誤，本工具將在後續工作中進行修正，請以最終結果為準。")
 
-    line = listFile.readline()
-    location = line.replace("\n", "")
-    locationSN = getPartlyMatchedSN(location, locationListEN)
-    print("獲得地點:\t{0} -> {1}"
-          .format(location, locationListCH[locationSN]))
-    if "Apparel Shop" in location:
-        location = "时装店"
+    clothList = []
+    listFile = open("list.txt", "r")
+    # 錯誤列表
+    errorList = []
+    # 總價統計
+    priceSum = 0
 
-    line = listFile.readline()
-    version = line.replace("\n", "")
-    if version == "Both":
-        version = 0
-    elif version == "Ultra Sun":
-        version = 1
-    elif version == "Ultra Moon":
-        version = 2
-    print("版本限定:\t{0}".format(version))
+    while True:
+        """
+        list.txt 中一件服飾對應十行：
 
-    listFile.readline()
+        ImgSN
+        ImgSN       重複
+        Type        服飾種類如Ｔ恤等
+        Color
+        Catalog     服飾類型如上衣、褲、裙等
+        Price
+        Location
+        Version
 
-    # 加入列表並下載圖片
-    # 若未成功識別種類則發出警告且不加入列表
-    if typeSN == -1:
-        print("警告: 未成功處理第此項目，請檢查。")
-        errorList.append(len(clothList) + 1)
-    else:
-        priceSum = priceSum + price
-        if willGetImg:
-            getImg(imgSN, typeSN, colorSN)
-        newCloth = Cloth(typeSN, colorSN, price, locationSN, location, version)
-        clothList.append(newCloth)
-    print("")
+        注意首位各有一空行
+        """
+        # 第1行若為空則退出循環
+        line = listFile.readline()
+        if len(line) == 0:
+            break
 
-listFile.close()
-print("處理完畢。\n")
+        print("正在處理：")
+        print("序號:\t\t{0}".format(len(clothList) + 1))
+        line = listFile.readline()
+        imgSN = int(line)
+        print("圖片編號:\t{0}".format(imgSN))
 
-# 讀取列表並生成 Wiki 代碼
-print("正在生成 Wiki 代碼⋯")
-wikiFile = open("wiki.txt", "w")
-wikiTableHead = """== {0} ==
+        listFile.readline()
+
+        line = listFile.readline()
+        clothType = line.replace("\n", "")
+        typeSN = getFullyMatchedSN(clothType, typeListEN)
+        if typeSN == -1:
+            print("警告: 未找到對應服飾，原文: {0}".format(clothType))
+        else:
+            print("服飾種類:\t{0} -> {1}".format(clothType, typeListCH[typeSN]))
+
+        line = listFile.readline()
+        color = line.replace("\n", "")
+        if color == "":
+            colorSN = -1
+            print("顏色:\t\t無")
+        else:
+            colorSN = getFullyMatchedSN(color, colorListEN)
+            print("顏色:\t\t{0} -> {1}".format(color, colorListCH[colorSN]))
+
+        listFile.readline()
+
+        line = listFile.readline()
+        if line.replace("\n", "").isdigit():
+            price = int(line)
+        else:
+            price = 0
+        print("價格:\t\t{0:,}".format(price))
+
+        line = listFile.readline()
+        location = line.replace("\n", "")
+        locationSN = getPartlyMatchedSN(location, locationListEN)
+        print("獲得地點:\t{0} -> {1}"
+              .format(location, locationListCH[locationSN]))
+        if "Apparel Shop" in location:
+            location = "时装店"
+
+        line = listFile.readline()
+        version = line.replace("\n", "")
+        if version == "Both":
+            version = 0
+        elif version == "Ultra Sun":
+            version = 1
+        elif version == "Ultra Moon":
+            version = 2
+        print("版本限定:\t{0}".format(version))
+
+        listFile.readline()
+
+        # 加入列表並下載圖片
+        # 若未成功識別種類則發出警告且不加入列表
+        if typeSN == -1:
+            if willGetImg:
+                print("警告: 未成功處理第此項目，請檢查。\n但仍然下載並處理本圖片。")
+                getImg(imgSN, typeSN, colorSN)
+            else:
+                print("警告: 未成功處理第此項目，請檢查。")
+            errorList.append(len(clothList) + 1)
+        else:
+            priceSum = priceSum + price
+            if willGetImg:
+                getImg(imgSN, typeSN, colorSN)
+            newCloth = Cloth(typeSN, colorSN, price, locationSN, location, version)
+            clothList.append(newCloth)
+        print("")
+
+    listFile.close()
+    print("處理完畢。\n")
+
+    # 讀取列表並生成 Wiki 代碼
+    print("正在生成 Wiki 代碼⋯")
+    wikiFile = open("wiki.txt", "w")
+    wikiTableHead = """=== {0} ===
 {{| class = "a-l eplist roundy sortable bgd-{1} b-{1}"
 |- class = "bg-{1}"
 ! class = "roundytl-6" rowspan = 4 | 名称
@@ -429,44 +492,44 @@ wikiTableHead = """== {0} ==
 |-
 ! class = "unsortable bgl-UM" | 仅究极之月
 
-""".format(catalogList[catalogSN], versionCode)
-wikiFile.write(wikiTableHead)
+""".format(catalogType, versionCode)
+    wikiFile.write(wikiTableHead)
 
-scanner = 0
-while scanner < len(clothList):
-    # 如果有同類型服飾則應當合併
-    # 如果類型序列號、價格和購買城市序列號均一致則可判斷為同一類型並予以合併
-    spanCount = 1
-    print("{0}:\t".format(typeListCH[clothList[scanner].typeSN]), end = "")
-    while (scanner + spanCount < len(clothList) and
-           clothList[scanner].typeSN == clothList[scanner + spanCount].typeSN and
-           clothList[scanner].price == clothList[scanner + spanCount].price and
-           clothList[scanner].locationSN == clothList[scanner + spanCount].locationSN):
-        spanCount += 1
-    wikiColumn = getColumn(spanCount,
-                           clothList[scanner].typeSN,
-                           clothList[scanner].colorSN,
-                           clothList[scanner].price,
-                           clothList[scanner].locationSN,
-                           clothList[scanner].location,
-                           clothList[scanner].version)
-    wikiFile.write(wikiColumn)
-    if spanCount > 1:
-        print("合併{0}行".format(spanCount))
-        for spanScanner in range(1, spanCount):
-            wikiColumn = getColumn(0,
-                                   clothList[scanner + spanScanner].typeSN,
-                                   clothList[scanner + spanScanner].colorSN,
-                                   clothList[scanner + spanScanner].price,
-                                   clothList[scanner + spanScanner].locationSN,
-                                   clothList[scanner + spanScanner].location,
-                                   clothList[scanner + spanScanner].version)
-            wikiFile.write(wikiColumn)
-    else:
-        print("無須合併")
-    scanner += spanCount
+    scanner = 0
+    while scanner < len(clothList):
+        # 如果有同類型服飾則應當合併
+        # 如果類型序列號、價格和購買城市序列號均一致則可判斷為同一類型並予以合併
+        spanCount = 1
+        print("{0}:\t".format(typeListCH[clothList[scanner].typeSN]), end = "")
+        while (scanner + spanCount < len(clothList) and
+               clothList[scanner].typeSN == clothList[scanner + spanCount].typeSN and
+               clothList[scanner].price == clothList[scanner + spanCount].price and
+               clothList[scanner].locationSN == clothList[scanner + spanCount].locationSN):
+            spanCount += 1
+        wikiColumn = getColumn(spanCount,
+                               clothList[scanner].typeSN,
+                               clothList[scanner].colorSN,
+                               clothList[scanner].price,
+                               clothList[scanner].locationSN,
+                               clothList[scanner].location,
+                               clothList[scanner].version)
+        wikiFile.write(wikiColumn)
+        if spanCount > 1:
+            print("合併{0}行".format(spanCount))
+            for spanScanner in range(1, spanCount):
+                wikiColumn = getColumn(0,
+                                       clothList[scanner + spanScanner].typeSN,
+                                       clothList[scanner + spanScanner].colorSN,
+                                       clothList[scanner + spanScanner].price,
+                                       clothList[scanner + spanScanner].locationSN,
+                                       clothList[scanner + spanScanner].location,
+                                       clothList[scanner + spanScanner].version)
+                wikiFile.write(wikiColumn)
+        else:
+            print("無須合併")
+        scanner += spanCount
 
-wikiFile.write("""|-
+    wikiFile.write("""|-
 | class = \"bg-{0}\" colspan = 5 | \'\'\'共{1}款{2}\'\'\'<br/>\'\'\'<small>价值{{{{$}}}}{3:,}</small>\'\'\'
 
 |}}
@@ -474,13 +537,18 @@ wikiFile.write("""|-
 {{{{-}}}}
 """.format(versionCode,
            len(clothList) - len(errorList),
-           catalogList[catalogSN],
+           catalogType,
            priceSum))
-wikiFile.close()
+    wikiFile.close()
+    if willGetImg:
+        print("處理完畢，共處理{0}個服飾，已生成完整 wiki.txt 文件及圖片。".format(len(clothList)))
+    else:
+        print("處理完畢，共處理{0}個服飾，已生成完整 wiki.txt 文件。".format(len(clothList)))
+    if len(errorList) > 0:
+        print("未成功處理{0}個服飾，序號如下:".format(len(errorList)))
+        for scanner in errorList:
+            print("  {0}".format(scanner))
+    print("運行耗時: {0:.2f}秒。".format(time.time() - startTime))
 
-print("處理完畢，共處理{0}個服飾，已生成完整 wiki.txt 文件及圖片。".format(len(clothList)))
-if len(errorList) > 0:
-    print("未成功處理{0}個服飾，序號如下:".format(len(errorList)))
-    for scanner in errorList:
-        print("  {0}".format(scanner))
-print("運行耗時: {0:.2f}秒。".format(time.time() - startTime))
+if __name__ == '__main__':
+    main()
