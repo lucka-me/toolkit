@@ -4,7 +4,7 @@
 """
 神奇寶貝百科服飾列表生成器
 Author:     Lucka
-Version:    0.4.0
+Version:    0.4.1
 Licence:    MIT
 """
 
@@ -334,7 +334,7 @@ def main():
         imgHeight = 64
         cropY = 8
     elif "<td class=\"fooinfo\">Accessories</td>" in sourceString:
-        if sex == "F":
+        if sex == "M":
             print("錯誤: 識別為男生但類型為髮飾。")
             exit()
         catalogType = "发饰"
