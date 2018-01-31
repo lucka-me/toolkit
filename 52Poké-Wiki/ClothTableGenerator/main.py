@@ -4,7 +4,7 @@
 """
 神奇寶貝百科服飾列表生成器
 Author:     Lucka
-Version:    0.4.1
+Version:    0.4.2
 Licence:    MIT
 """
 
@@ -223,9 +223,19 @@ def getColumn(rowspan, typeSN, colorSN,
                               colorRowStyle, colorRow,
                               priceRow,
                               locationRow))
-        # Gracidea -> [[好奥乐市]]<br/>[[购物广场]][[购物广场#葛拉西蒂亞|葛拉西蒂亞]]
+        # 修復常見的錯誤
         result = result.replace("Gracidea",
                                 "[[好奥乐市]]<br/>[[购物广场]][[购物广场#葛拉西蒂亞|葛拉西蒂亞]]")
+        result = result.replace("<br/>[[皮卡丘山谷#Win Pikachu Valley Quiz|Win Pikachu Valley Quiz]]",
+                                "")
+        result = result.replace("静市#Malie City Community Center|Malie City Community Center",
+                                "居民中心")
+        result = result.replace("Konikoni Jewelery Shop",
+                                "[[可霓可市]]<br/>[[可霓可市#丽姿的宝石店|丽姿的宝石店]]")
+        result = result.replace("From GAME FREAK Director after completing Alola Pokédex",
+                                "[[慷待市]]<br/>[[慷待市#GAME FREAK办公室|GAME FREAK办公室]]<br/>完成[[阿罗拉图鉴]]后由游戏总监赠送")
+        result = result.replace("Po Town Pokémon Center|Po Town Pokémon Center",
+                                "宝可梦中心|宝可梦中心")
     return result
 
 
