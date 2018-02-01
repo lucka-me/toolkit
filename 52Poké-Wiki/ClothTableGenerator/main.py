@@ -4,7 +4,7 @@
 """
 神奇寶貝百科服飾列表生成器
 Author:     Lucka
-Version:    0.4.2
+Version:    0.4.3
 Licence:    MIT
 """
 
@@ -209,7 +209,7 @@ def getColumn(rowspan, typeSN, colorSN,
 
         # 生成代碼
         if rowspan > 1:
-            rowspanStyle = "rowspan = {0} |".format(rowspan)
+            rowspanStyle = "rowspan = {0} | ".format(rowspan)
             result = ("|-\n| {0}{1}\n| {2}\n| {3}{4}\n| {5}{6}\n| {7}{8}\n\n"
                       .format(rowspanStyle, nameRow,
                               imgRow,
@@ -299,6 +299,7 @@ def main():
     # 0 上衣:     96x96+(x)+50
     # 1 褲裙:     96x96+(x)+105
     # 2 襪子:     96x48+(x)+182
+    #   女生:     96x96+(x)+134
     # 3 鞋子:     96x48+(x)+182
     # 4 包包:     96x96+(x)+50
     # 5 帽子:     64x64+(x)+8
@@ -321,8 +322,8 @@ def main():
     elif "<td class=\"fooinfo\">Socks</td>" in sourceString:
         catalogType = "袜子"
         imgWidth = 96
-        imgHeight = 48
-        cropY = 182
+        imgHeight = 48 if sex == "M" else 96
+        cropY = 182 if sex == "M" else 134
     elif "<td class=\"fooinfo\">Shoes</td>" in sourceString:
         catalogType = "鞋子"
         imgWidth = 96
