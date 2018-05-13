@@ -7,6 +7,7 @@ A collection of tools made by Lucka.
 * [GIS](/GIS/)
   * [RTS 转换器](/GIS/RTSConverter/)
   * [DEM 生成器](/GIS/DEMBuilder/)
+  * [ISODATA 影像分类器](/GIS/ClassifyISODATA/)
 
 ## Licence
 All the tools are [licensed under MIT](/LICENSE).
