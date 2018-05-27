@@ -5,7 +5,7 @@
 ClassifyISODATA Gray
 Classify image with ISODATA in Python
 Author:     Lucka
-Version:    0.1.0
+Version:    0.1.1
 License:    MIT
 """
 
@@ -108,7 +108,7 @@ def main():
 
     if isRGB:
         image = Image.open(inputFilename)
-        result = ISODATAKit.doISODATARGB(image, argvK, argvTN, argvTS, int(argvTC), argvL, argvI)
+        result = ISODATAKit.doISODATARGB(image, argvK, argvTN, argvTS, argvTC, argvL, argvI)
         plot.figure("Result")
         plot.imshow(result)
         plot.show()

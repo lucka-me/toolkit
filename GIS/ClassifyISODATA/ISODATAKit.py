@@ -4,7 +4,7 @@
 """
 ISODATAKit for ClassifyISODATA
 Author:     Lucka
-Version:    0.1.0
+Version:    0.1.1
 License:    MIT
 """
 
@@ -15,7 +15,7 @@ import random
 
 # Class
 class Pixel:
-    """Pixel in Gray"""
+    """Pixel"""
     def __init__(self, initX: int, initY: int, initColor):
         self.x = initX
         self.y = initY
@@ -283,17 +283,21 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
                 currentSD[1] = math.sqrt(currentSD[1] / len(clusterList[i].pixelList))
                 currentSD[2] = math.sqrt(currentSD[2] / len(clusterList[i].pixelList))
                 # Find the max in SD of R, G and B
-                maxSD = 0
+                maxSD = currentSD[0]
                 for j in (1, 2):
-                    maxSD = j if currentSD[j] > currentSD[maxSD] else maxSD
-                if (currentSD[maxSD] > TS) and ((aveDisctanceList[i] > aveDistanceAll and len(clusterList[i].pixelList) > 2 * (TN + 1)) or (len(clusterList) < K / 2)):
-                    gamma = 0.5 * currentSD[maxSD]
-                    clusterList[i].center[maxSD] += gamma
+                    maxSD = currentSD[j] if currentSD[j] > maxSD else maxSD
+                if (maxSD > TS) and ((aveDisctanceList[i] > aveDistanceAll and len(clusterList[i].pixelList) > 2 * (TN + 1)) or (len(clusterList) < K / 2)):
+                    gamma = 0.5 * maxSD
+                    clusterList[i].center[0] += gamma
+                    clusterList[i].center[1] += gamma
+                    clusterList[i].center[2] += gamma
                     clusterList.append(Cluster(numpy.array([clusterList[i].center[0],
                                                             clusterList[i].center[1],
                                                             clusterList[i].center[2]],
                                                             dtype = numpy.uint8)))
-                    clusterList[i].center[maxSD] -= gamma * 2
+                    clusterList[i].center[0] -= gamma * 2
+                    clusterList[i].center[1] -= gamma * 2
+                    clusterList[i].center[2] -= gamma * 2
                     clusterList.append(Cluster(numpy.array([clusterList[i].center[0],
                                                             clusterList[i].center[1],
                                                             clusterList[i].center[2]],
