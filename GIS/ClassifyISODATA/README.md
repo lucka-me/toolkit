@@ -48,15 +48,15 @@
 
 | 输入图像 | 输出图像 | 参数 | 运行结果
 | :---: | :---: | :--- | :--- |
-| ![](/Resource/T.png) | ![](/Resource/T1.png) | ![](/Resource/LaTeX_K_=_4,_L_=_10,_I_=_8.svg)<br/>![](/Resource/LaTeX_theta_N_=_3,_theta_S_=_4.0,_theta_C_=_40.svg) | 迭代4次<br/>分为4类 |
-| ![](/Resource/TC.png) | ![](/Resource/TC1.png) | ![](/Resource/LaTeX_K_=_4,_L_=_10,_I_=_8.svg)<br/>![](/Resource/LaTeX_theta_N_=_3,_theta_S_=_2.0,_theta_C_=_100.svg) | 迭代6次<br/>分为4类 |
+| ![](./Resource/T.png) | ![](./Resource/T1.png) | ![](./Resource/LaTeX_K_=_4,_L_=_10,_I_=_8.svg)<br/>![](./Resource/LaTeX_theta_N_=_3,_theta_S_=_4.0,_theta_C_=_40.svg) | 迭代4次<br/>分为4类 |
+| ![](./Resource/TC.png) | ![](./Resource/TC1.png) | ![](./Resource/LaTeX_K_=_4,_L_=_10,_I_=_8.svg)<br/>![](./Resource/LaTeX_theta_N_=_3,_theta_S_=_2.0,_theta_C_=_100.svg) | 迭代6次<br/>分为4类 |
 
 结果基本符合预期，可见基本算法和代码没有问题。
 
 ### 存在的问题及解决办法
 1. 运行效率和运算速度极低，应当对代码进行优化。
 2. 对彩色的处理存在较大的问题，本程序使用RGB空间中的优化欧式距离[^1]作为颜色差异的度量：  
-![](/Resource/LaTeX_Color_Distance.svg)  
+![](./Resource/LaTeX_Color_Distance.svg)  
 但实际上这种方法并不可取，在使用实际照片进行分类时结果非常不理想，应当先转换至 HSI 等基于视觉感受的色彩空间再进行分类。
 
 ## Changelog
