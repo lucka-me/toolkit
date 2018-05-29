@@ -4,7 +4,7 @@
 """
 ISODATAKit for ClassifyISODATA
 Author:     Lucka
-Version:    0.1.1
+Version:    0.1.2
 License:    MIT
 """
 
@@ -115,7 +115,7 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
 
         if (len(clusterList) <= K / 2) or not (iterationCount % 2 == 0 or len(clusterList) >= K * 2):
             # Split
-            print("Split")
+            beforeCount = len(clusterList)
             for i in range(len(clusterList) - 1, -1, -1):
                 currentSD = 0.0
                 for pixel in clusterList[i].pixelList:
@@ -126,9 +126,10 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
                     clusterList.append(Cluster(int(clusterList[i].center + gamma)))
                     clusterList.append(Cluster(int(clusterList[i].center - gamma)))
                     clusterList.pop(i)
+            print("Split {0} -> {1}".format(beforeCount, len(clusterList)))
         elif (iterationCount % 2 == 0) or (len(clusterList) >= K * 2) or (iterationCount == I):
             # Merge
-            print("Merge")
+            beforeCount = len(clusterList)
             didAnythingInLastIteration = False
             clusterPairList = []
             for i in range(0, len(clusterList)):
@@ -163,6 +164,7 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
                 clusterList.pop(index)
             for center in newClusterCenterList:
                 clusterList.append(Cluster(center))
+            print("Merge {0} -> {1}".format(beforeCount, len(clusterList)))
 
     # Generate the new image martrix
     print("Over")
@@ -272,7 +274,7 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
 
         if (len(clusterList) <= K / 2) or not (iterationCount % 2 == 0 or len(clusterList) >= K * 2):
             # Split
-            print("Split")
+            beforeCount = len(clusterList)
             for i in range(len(clusterList) - 1, -1, -1):
                 currentSD = [0.0, 0.0, 0.0]
                 for pixel in clusterList[i].pixelList:
@@ -303,9 +305,10 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
                                                             clusterList[i].center[2]],
                                                             dtype = numpy.uint8)))
                     clusterList.pop(i)
+            print("Split {0} -> {1}".format(beforeCount, len(clusterList)))
         elif (iterationCount % 2 == 0) or (len(clusterList) >= K * 2) or (iterationCount == I):
             # Merge
-            print("Merge")
+            beforeCount = len(clusterList)
             didAnythingInLastIteration = False
             clusterPairList = []
             for i in range(0, len(clusterList)):
@@ -342,6 +345,7 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
                 clusterList.pop(index)
             for center in newClusterCenterList:
                 clusterList.append(Cluster(numpy.array([center[0], center[1], center[2]], dtype = numpy.uint8)))
+            print("Merge {0} -> {1}".format(beforeCount, len(clusterList)))
 
     # Generate the new image martrix
     print("Over")

@@ -2,10 +2,10 @@
 # coding: utf-8
 
 """
-ClassifyISODATA Gray
+ClassifyISODATA
 Classify image with ISODATA in Python
 Author:     Lucka
-Version:    0.1.1
+Version:    0.1.2
 License:    MIT
 """
 
