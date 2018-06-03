@@ -4,7 +4,7 @@
 """
 ISODATAKit for ClassifyISODATA
 Author:     Lucka
-Version:    0.1.2
+Version:    0.1.3
 License:    MIT
 """
 
@@ -59,10 +59,15 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
     didAnythingInLastIteration = True
     while True:
         iterationCount += 1
+
         # Clear the pixel lists of all clusters
         for cluster in clusterList:
             cluster.pixelList.clear()
+        print("------")
+        print("Iteration: {0}".format(iterationCount))
+
         # Classify all pixels into clusters
+        print("Classifying...", end = '', flush = True)
         for row in range(0, imgX):
             for col in range(0, imgY):
                 targetClusterIndex = 0
@@ -74,6 +79,7 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
                         targetClusterDistance = currentDistance
                         targetClusterIndex = i
                 clusterList[targetClusterIndex].pixelList.append(Pixel(row, col, imgArray[row, col]))
+        print(" Finished.")
 
         # Check TN
         gotoNextIteration = False
@@ -84,9 +90,12 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
                 gotoNextIteration = True
                 break
         if gotoNextIteration:
+            print("TN checking not passed.")
             continue
+        print("TN checking passed.")
 
         # Recalculate the centers
+        print("Recalculating the centers...", end = '', flush = True)
         for cluster in clusterList:
             sum = 0.0
             for pixel in cluster.pixelList:
@@ -95,7 +104,7 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
             if ave != cluster.center:
                 didAnythingInLastIteration = True
             cluster.center = ave
-
+        print(" Finished.")
         if iterationCount > I:
             break
         if not didAnythingInLastIteration:
@@ -103,6 +112,7 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
             break
 
         # Calculate the average distance
+        print("Preparing for Merging and Spliting...", end = '', flush = True)
         aveDisctanceList = []
         sumDistanceAll = 0
         for cluster in clusterList:
@@ -112,9 +122,11 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
             aveDisctanceList.append(float(currentSumDistance) / len(cluster.pixelList))
             sumDistanceAll += currentSumDistance
         aveDistanceAll = float(sumDistanceAll) / (imgX * imgY)
+        print(" Finished.")
 
         if (len(clusterList) <= K / 2) or not (iterationCount % 2 == 0 or len(clusterList) >= K * 2):
             # Split
+            print("Split:", end = '', flush = True)
             beforeCount = len(clusterList)
             for i in range(len(clusterList) - 1, -1, -1):
                 currentSD = 0.0
@@ -126,9 +138,10 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
                     clusterList.append(Cluster(int(clusterList[i].center + gamma)))
                     clusterList.append(Cluster(int(clusterList[i].center - gamma)))
                     clusterList.pop(i)
-            print("Split {0} -> {1}".format(beforeCount, len(clusterList)))
+            print(" {0} -> {1}".format(beforeCount, len(clusterList)))
         elif (iterationCount % 2 == 0) or (len(clusterList) >= K * 2) or (iterationCount == I):
             # Merge
+            print("Merge:", end = '', flush = True)
             beforeCount = len(clusterList)
             didAnythingInLastIteration = False
             clusterPairList = []
@@ -164,7 +177,7 @@ def doISODATAGray(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> 
                 clusterList.pop(index)
             for center in newClusterCenterList:
                 clusterList.append(Cluster(center))
-            print("Merge {0} -> {1}".format(beforeCount, len(clusterList)))
+            print(" {0} -> {1}".format(beforeCount, len(clusterList)))
 
     # Generate the new image martrix
     print("Over")
@@ -210,21 +223,27 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
     didAnythingInLastIteration = True
     while True:
         iterationCount += 1
+
         # Clear the pixel lists of all clusters
         for cluster in clusterList:
             cluster.pixelList.clear()
+        print("------")
+        print("Iteration: {0}".format(iterationCount))
+
         # Classify all pixels into clusters
+        print("Classifying...", end = '', flush = True)
         for row in range(0, imgX):
             for col in range(0, imgY):
                 targetClusterIndex = 0
                 targetClusterDistance = distanceBetween(imgArray[row, col], clusterList[0].center)
                 # Classify
-                for i in range(0, len(clusterList)):
+                for i in range(1, len(clusterList)):
                     currentDistance = distanceBetween(imgArray[row, col], clusterList[i].center)
                     if currentDistance < targetClusterDistance:
                         targetClusterDistance = currentDistance
                         targetClusterIndex = i
                 clusterList[targetClusterIndex].pixelList.append(Pixel(row, col, imgArray[row, col]))
+        print(" Finished.")
 
         # Check TN
         gotoNextIteration = False
@@ -235,9 +254,12 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
                 gotoNextIteration = True
                 break
         if gotoNextIteration:
+            print("TN checking not passed.")
             continue
+        print("TN checking passed.")
 
         # Recalculate the centers
+        print("Recalculating the centers...", end = '', flush = True)
         for cluster in clusterList:
             sumR = 0.0
             sumG = 0.0
@@ -254,7 +276,7 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
                 aveB != cluster.center[2]):
                 didAnythingInLastIteration = True
             cluster.center = numpy.array([aveR, aveG, aveB], dtype = numpy.uint8)
-
+        print(" Finished.")
         if iterationCount > I:
             break
         if not didAnythingInLastIteration:
@@ -262,6 +284,7 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
             break
 
         # Calculate the average distance
+        print("Preparing for Merging and Spliting...", end = '', flush = True)
         aveDisctanceList = []
         sumDistanceAll = 0.0
         for cluster in clusterList:
@@ -271,9 +294,11 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
             aveDisctanceList.append(float(currentSumDistance) / len(cluster.pixelList))
             sumDistanceAll += currentSumDistance
         aveDistanceAll = float(sumDistanceAll) / (imgX * imgY)
+        print(" Finished.")
 
         if (len(clusterList) <= K / 2) or not (iterationCount % 2 == 0 or len(clusterList) >= K * 2):
             # Split
+            print("Split:", end = '', flush = True)
             beforeCount = len(clusterList)
             for i in range(len(clusterList) - 1, -1, -1):
                 currentSD = [0.0, 0.0, 0.0]
@@ -305,9 +330,10 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
                                                             clusterList[i].center[2]],
                                                             dtype = numpy.uint8)))
                     clusterList.pop(i)
-            print("Split {0} -> {1}".format(beforeCount, len(clusterList)))
+            print(" {0} -> {1}".format(beforeCount, len(clusterList)))
         elif (iterationCount % 2 == 0) or (len(clusterList) >= K * 2) or (iterationCount == I):
             # Merge
+            print("Merge:", end = '', flush = True)
             beforeCount = len(clusterList)
             didAnythingInLastIteration = False
             clusterPairList = []
@@ -345,7 +371,7 @@ def doISODATARGB(image, K: int, TN: int, TS: float, TC:int, L: int, I: int) -> I
                 clusterList.pop(index)
             for center in newClusterCenterList:
                 clusterList.append(Cluster(numpy.array([center[0], center[1], center[2]], dtype = numpy.uint8)))
-            print("Merge {0} -> {1}".format(beforeCount, len(clusterList)))
+            print(" {0} -> {1}".format(beforeCount, len(clusterList)))
 
     # Generate the new image martrix
     print("Over")
