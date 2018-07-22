@@ -9,8 +9,16 @@
 将随需求而不断扩充内容。
 
 ## Changelog
+```markdown
+### [1.0.1] - 2018-07-22
+#### Added
+- `select` 样式
+```
+
+```markdown
 ### [1.0] - 2018-07-21
 - 初始版本
+```
 
 ## Licence
 本工具基于 [MIT 协议](../../LICENSE)。

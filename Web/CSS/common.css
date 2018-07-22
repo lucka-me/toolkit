@@ -1,6 +1,6 @@
 /************************************************************************/
 /* CSS for Lucka's web projects                             by lucka-me */
-/* Licenced under MIT                                       Version 1.0 */
+/* Licenced under MIT                                         Ver 1.0.1 */
 /* More detail: https://github.com/lucka-me/toolkit/tree/master/Web/CSS */
 /************************************************************************/
 
@@ -221,11 +221,21 @@ input {
     margin: 6px;
 }
 
+/* Select */
 select {
-    flex: none;
-    margin: 4px;
-    padding-left: 4px;
-    padding-right: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-family: 'Monda', monospace;
+    color: #004D85;
+    font-size: 14px;
+    background: none;
+    border: 2px solid #004D85;
+    border-radius: 2px;
+    outline: none;
+    min-width: 0px;
+    margin: 6px;
+    padding: 0 6px;
 }
 
 /* Split */
