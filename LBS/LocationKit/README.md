@@ -33,5 +33,13 @@ The code was born in my recent project [RoundO-android](https://github.com/lucka
 - Initial version
 ```
 
+```markdown
+### [0.1.1] - 2018-10-04
+#### Changed
+- Make lastLocation a getter
+#### Removed
+- Mock location detecting
+```
+
 ## Licence
 The code is released under [MIT License](../../LICENSE)。

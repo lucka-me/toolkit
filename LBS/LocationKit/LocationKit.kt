@@ -50,6 +50,7 @@ import kotlin.math.*
  * - [lastLocation]
  * - [isLocationAvailable]
  * ### Private
+ * - [_lastLocation]
  * - [locationManager]
  * - [currentProvider]
  * - [criteria]
@@ -81,6 +82,9 @@ import kotlin.math.*
  * ## Changelog
  * ### 0.1.0
  * - Initial version
+ * ### 0.1.1
+ * - Removed mock location detecting
+ * - Make [lastLocation] a getter
  *
  * @param [context] The context
  * @param [locationKitListener] The interface, see [LocationKitListener]
@@ -88,7 +92,8 @@ import kotlin.math.*
  * @author lucka-me
  * @since 0.1.0
  *
- * @property [lastLocation] The last location with fixed (GCJ-02) coordinates
+ * @property [_lastLocation] The last location with fixed (GCJ-02) coordinates
+ * @property [lastLocation] The getter for last location with fixed (GCJ-02) coordinates ([_lastLocation])
  * @property [isLocationAvailable] If the location is available
  * @property [locationManager] The original [LocationManager]
  * @property [currentProvider] The location provider in use
@@ -109,7 +114,9 @@ class LocationKit(
     private val locationKitListener: LocationKitListener
 ) {
 
-    var lastLocation: Location = Location(FIXED_PROVIDER)
+    private var _lastLocation: Location = Location(FIXED_PROVIDER)
+    val lastLocation
+        get() = Location(_lastLocation)
     var isLocationAvailable: Boolean = false
     private val locationManager =
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -119,17 +126,11 @@ class LocationKit(
 
         override fun onLocationChanged(location: Location?) {
 
-            if (TrumeKit.checkMock(location)) {
-                val error = Exception(context.getString(R.string.err_location_mock))
-                isLocationAvailable = false
-                locationKitListener.onException(error)
-                return
-            }
             if (location == null) {
                 isLocationAvailable = false
                 return
             }
-            lastLocation = fixCoordinate(location)
+            _lastLocation = fixCoordinate(location)
             isLocationAvailable = true
             locationKitListener.onLocationUpdated(lastLocation)
         }
@@ -257,16 +258,16 @@ class LocationKit(
             val location = locationManager
                 .getLastKnownLocation(locationManager.getBestProvider(criteria, true))
             if (location == null) {
-                lastLocation.longitude = DEFAULT_LONGITUDE
-                lastLocation.latitude = DEFAULT_LATITUDE
+                _lastLocation.longitude = DEFAULT_LONGITUDE
+                _lastLocation.latitude = DEFAULT_LATITUDE
                 isLocationAvailable = false
             } else {
-                lastLocation = fixCoordinate(location)
+                _lastLocation = fixCoordinate(location)
                 isLocationAvailable = true
             }
         } else {
-            lastLocation.longitude = DEFAULT_LONGITUDE
-            lastLocation.latitude = DEFAULT_LATITUDE
+            _lastLocation.longitude = DEFAULT_LONGITUDE
+            _lastLocation.latitude = DEFAULT_LATITUDE
             isLocationAvailable = false
         }
     }
@@ -327,8 +328,7 @@ class LocationKit(
      * @since 0.1.0
      */
     private fun startUpdateAssist(provider: String) {
-        if (ActivityCompat
-            .checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED
         ) {
             locationManager.requestLocationUpdates(
