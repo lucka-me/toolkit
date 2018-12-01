@@ -4,7 +4,7 @@ View the exif metadata and check where the photo was taken.
 ## Function
 - Decode the exif metadata
 - View the exif metadata in JSON
-- Check the location if the data exists, calculate the distance and azimuth from the portal's location
+- Check the location if the data exists, calculate the distance from the portal's location and show a marker on the map below
 
 ## Usage
 To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js) and install it with userscript manager like Tampermonkey, then there will be two new buttons on the OPR page, under the descriptions.
@@ -12,7 +12,6 @@ To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewe
 ### Notice
 - It may takes a while to fetch the full-size picture and decode the exif metadata, so be a little patient please.
 - Maybe the location exif data is not common as you (or we) image, so don't be depressed, it's still helpful sometimes.
-- One of my target, adding a new marker to the map, is currently unreachable accroding to the limitation of Google Maps JavaScript API, sorry for that.
 
 ## Preview
 | Full exif Metadata | Check Location
@@ -32,8 +31,19 @@ To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewe
 
 
 ## Changelog
+```markdown
+### [0.1.1] - 2018-12-01
+#### Added
+- Marker of the exif location on the map
+
+#### Removed
+- Azimuth
+```
+
+```markdown
 ### [0.1.0] - 2018-12-01
 - Initial version
+```
 
 ## Licence
 This userscript is released under the [MIT License](../../LICENSE).

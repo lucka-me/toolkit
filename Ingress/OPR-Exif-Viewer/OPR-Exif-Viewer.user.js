@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.1
+// @version      0.1.1
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @match        https://opr.ingress.com/recon
@@ -12,6 +12,7 @@
 var detectImgLoaded = false;
 var distanceShown = false;
 var detectImg = null;
+var detectLocation = null;
 
 var dmsToDeg = function(dms) {
     var d = dms[0];
@@ -30,17 +31,6 @@ var getDistance = function(p1Lat, p1Lng, p2Lat, p2Lng) {
   var d = R * c;
   return d;
 };
-
-var getAzimuth = function(p1Lat, p1Lng, p2Lat, p2Lng) {
-    var radLat1 = p1Lat * Math.PI / 180;
-    var radLng1 = p1Lng * Math.PI / 180;
-    var radLat2 = p2Lat * Math.PI / 180;
-    var radLng2 = p2Lng * Math.PI / 180;
-    var dLng = radLng2 - radLng1;
-    var azimuth = Math.atan2(Math.sin(dLng) * Math.cos(radLat2), Math.cos(radLat1) * Math.sin(radLat2) - Math.sin(radLat1) * Math.cos(radLat2) * Math.cos(dLng)) * 180 / Math.PI;
-    if (azimuth < 0) azimuth += 360;
-    return azimuth;
-}
 
 var loadDetectImg = function(onload) {
     var buttonCheckExifAll = document.getElementById("buttonCheckExifAll");
@@ -89,17 +79,30 @@ window.onCheckExifAll = function() {
     loadDetectImg(checkExifAll);
 }
 
+window. showMarker = function() {
+    var marker = new google.maps.Marker({
+        position: detectLocation,
+        map: subCtrl.map2,
+        label: "E",
+        title: "Exif Location"
+    });
+    subCtrl.map2.panTo(detectLocation);
+}
+
 var checkExifLocation = function(targetImage) {
     EXIF.getData(targetImage, function() {
         var buttonCheckExifLocation = document.getElementById("buttonCheckExifLocation");
         var allTags = EXIF.getAllTags(this);
         if (allTags.GPSLatitude && allTags.GPSLongitude) {
-            var latitude = (allTags.GPSLatitudeRef == "N" ? 1 : -1) * dmsToDeg(allTags.GPSLatitude);
-            var longitude = (allTags.GPSLongitudeRef == "E" ? 1 : -1) * dmsToDeg(allTags.GPSLongitude);
+            detectLocation = new google.maps.LatLng(
+                (allTags.GPSLatitudeRef == "N" ? 1 : -1) * dmsToDeg(allTags.GPSLatitude),
+                (allTags.GPSLongitudeRef == "E" ? 1 : -1) * dmsToDeg(allTags.GPSLongitude)
+            );
             if (!distanceShown) {
-                var subCtrl = angular.element(document.getElementById('NewSubmissionController')).scope().subCtrl;
-                $("#descriptionDiv").append("<br/>Distance: " + getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, latitude, longitude).toFixed(2) + "m");
-                $("#descriptionDiv").append("<br/>Azimuth: " + getAzimuth(subCtrl.pageData.lat, subCtrl.pageData.lng, latitude, longitude).toFixed(2));
+                $("#descriptionDiv").append(
+                    "<br/>Distance: " + getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, detectLocation.lat(), detectLocation.lng()).toFixed(2) + "m"
+                );
+                $("#descriptionDiv").append("<br/><span class=\"clickable ingress-mid-blue\" onclick=\"showMarker()\">[Marker]</span>");
                 distanceShown = true;
             }
             buttonCheckExifLocation.disabled = true;
