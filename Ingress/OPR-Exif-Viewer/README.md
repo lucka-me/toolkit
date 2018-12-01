@@ -32,6 +32,12 @@ To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewe
 
 ## Changelog
 ```markdown
+### [0.1.2] - 2018-12-01
+#### Changed
+- Optimized, prevent redundant decoding
+```
+
+```markdown
 ### [0.1.1] - 2018-12-01
 #### Added
 - Marker of the exif location on the map
