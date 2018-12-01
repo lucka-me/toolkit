@@ -21,13 +21,13 @@ To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewe
 
 ## Dependencies & References
 ### Library
-- [Exif.js](https://github.com/exif-js/exif-js)
+- [Exif.js](https://github.com/exif-js/exif-js)  
   A JavaScript library for reading EXIF meta data from image files.
 
 ### References
-- [SmartIntel/opr_show_exif_info.user.js](https://github.com/DeepAQ/SmartIntel/blob/master/opr_show_exif_info.user.js)
+- [SmartIntel/opr_show_exif_info.user.js](https://github.com/DeepAQ/SmartIntel/blob/master/opr_show_exif_info.user.js)  
   Another exif viewer for OPR, learned how to use exif.js correctly.
-- OPR_brainStroming
+- OPR_brainStroming  
   Useful plug-in for OPR, learned how to fetch the data of the portal.
 
 
