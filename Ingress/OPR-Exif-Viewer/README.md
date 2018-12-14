@@ -14,8 +14,8 @@ To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewe
 - It may takes a while to fetch the full-size picture and decode the exif metadata, so be a little patient please.
 - Maybe the location exif data is not common as you (or we) image, so don't be depressed, it's still helpful sometimes.
 - About Coordinate Conversion - 关于坐标转换  
-  If you suspect the location of either exif (such as some OnePlus devices) or portal is under GCJ-02 rather than WGJ-84, please try to use this function. Please notice the script can only convert the coordinate but **NOT detect GCG-02 coordinate**, you must judge by yourself.
-  如果您认为 EXIF 或能量塔的位置是 GCJ-02 坐标（即火星坐标，例如一加设备提交的照片 EXIF 位置很可能会是火星坐标），请尝试这一功能。但请务必注意：脚本只能进行坐标转换而**无法检测火星坐标**，因此您必须自行判断。
+  If you suspect the location of either exif (such as some OnePlus devices) or portal is under GCJ-02 rather than WGJ-84, please try to use this function. Please notice the script can only convert the coordinate but **NOT detect GCG-02 coordinate**, you must judge by yourself.  
+  如果您认为 EXIF 或能量塔的位置是 GCJ-02 坐标（即火星坐标，例如一加设备提交的照片 EXIF 位置很可能会是火星坐标），请尝试这一功能。但请务必注意：脚本只能进行坐标转换而**无法检测火星坐标**，因此您必须自行判断。
 
 ## Preview
 ![](Preview-All.png)  
