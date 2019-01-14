@@ -10,6 +10,15 @@
 
 ## Changelog
 ```markdown
+### [1.0.2] - 2019-01-14
+#### Added
+- `.margin-left-4`
+
+#### Changed
+- `.footer` 高度改为自动
+```
+
+```markdown
 ### [1.0.1] - 2018-07-22
 #### Added
 - `select` 样式
