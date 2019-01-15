@@ -10,6 +10,12 @@ View the exif metadata and check where the photo was taken.
 ## Usage
 To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js) and install it with userscript manager like Tampermonkey, then there will be two new buttons on the OPR page, under the descriptions.
 
+### Preference
+From `0.1.4`, you can set the items of `preferences` to modify some functions.
+| Item | Value | Description
+| :--- | :--- | :---
+| `autoRun`  | `true`<br/>`false` | Set to `true` if you want to get exif automatically when the page is loaded.
+
 ### Notice
 - It may takes a while to fetch the full-size picture and decode the exif metadata, so be a little patient please.
 - Maybe the location exif data is not common as you (or we) image, so don't be depressed, it's still helpful sometimes.
@@ -41,6 +47,12 @@ To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewe
   Algorithm to convert GCJ-02 to WGS-84.
 
 ## Changelog
+```markdown
+### [0.1.4] - 2019-01-15
+#### Added
+- Preference: autoRun
+```
+
 ```markdown
 ### [0.1.3] - 2018-12-14
 #### Added

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.1.3
+// @version      0.1.4
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -10,6 +10,12 @@
 // @grant        none
 // @require      https://cdn.jsdelivr.net/npm/exif-js
 // ==/UserScript==
+
+// Preferences BELOW
+var preferences = {
+    autoRun: false // Set to true if you want to get exif automatically when the page is loaded
+};
+// Preferences ABOVE
 
 var distanceShown = false;
 var exifTags = null;
@@ -199,4 +205,7 @@ window.onload = function() {
     descDiv.append("<br/><small class=\"gold\">EXIF</small><br/>");
     descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifAll\" onclick=\"onCheckExifAll()\">Check All</button>")
     descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifLocation\" onclick=\"onCheckExifLocation()\">Check Location</button>");
+    if (preferences.autoRun) {
+        window.onCheckExifLocation();
+    }
 };
