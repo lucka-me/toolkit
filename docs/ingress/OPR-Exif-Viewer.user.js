@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.1.4
+// @version      0.1.5
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
 // @downloadURL  https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
 // @match        https://opr.ingress.com/recon
 // @grant        none
+// @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://cdn.jsdelivr.net/npm/exif-js
 // ==/UserScript==
 
@@ -200,7 +201,7 @@ window.onCheckExifLocation = function() {
     getExifTags(checkExifLocation);
 };
 
-window.onload = function() {
+$("portalphoto:first").find("div").find(".center-cropped-img").one("load", function() {
     var descDiv = $("#descriptionDiv");
     descDiv.append("<br/><small class=\"gold\">EXIF</small><br/>");
     descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifAll\" onclick=\"onCheckExifAll()\">Check All</button>")
@@ -208,4 +209,4 @@ window.onload = function() {
     if (preferences.autoRun) {
         window.onCheckExifLocation();
     }
-};
+});
