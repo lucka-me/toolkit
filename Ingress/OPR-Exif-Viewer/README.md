@@ -12,6 +12,7 @@ To use the script, click [here](https://lucka.moe/toolkit/ingress/OPR-Exif-Viewe
 
 ### Preference
 From `0.1.4`, you can set the items of `preferences` to modify some functions.
+
 | Item | Value | Description
 | :--- | :--- | :---
 | `autoRun`  | `true`<br/>`false` | Set to `true` if you want to get exif automatically when the page is loaded.
