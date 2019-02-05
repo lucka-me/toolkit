@@ -49,6 +49,12 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.1.6] - 2019-02-05
+#### Fixed
+- Buttons don't show up sometimes
+```
+
+```markdown
 ### [0.1.5] - 2019-01-28
 #### Changed
 - Run the script when portal photo is loaded
