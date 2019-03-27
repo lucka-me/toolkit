@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.1.6
+// @version      0.1.7
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -19,6 +19,7 @@ var preferences = {
 // Preferences ABOVE
 
 var isScriptLoaded = false;
+var isButtonsAdded = false;
 var distanceShown = false;
 var exifTags = null;
 var detectLocation = null;
@@ -204,13 +205,20 @@ window.onCheckExifLocation = function() {
 
 function loadOPREV() {
     if (isScriptLoaded) return;
-    var descDiv = $("#descriptionDiv");
-    descDiv.append("<br/><small class=\"gold\">EXIF</small><br/>");
-    descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifAll\" onclick=\"onCheckExifAll()\">Check All</button>")
-    descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifLocation\" onclick=\"onCheckExifLocation()\">Check Location</button>");
-    isScriptLoaded = true;
+    if (!isButtonsAdded) {
+        var descDiv = $("#descriptionDiv");
+        descDiv.append("<br/><small class=\"gold\">EXIF</small><br/>");
+        descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifAll\" onclick=\"onCheckExifAll()\">Check All</button>")
+        descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifLocation\" onclick=\"onCheckExifLocation()\">Check Location</button>");
+        isButtonsAdded = true;
+    }
     if (preferences.autoRun) {
         window.onCheckExifLocation();
+        if ($('.center-cropped-img').attr('src')) {
+            isScriptLoaded = true;
+        }
+    } else {
+        isScriptLoaded = true;
     }
 };
 
