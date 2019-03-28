@@ -49,6 +49,12 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.1.8] - 2019-03-28
+#### Fixed
+- subCtrl not defined without OPR_brainStroming 
+```
+
+```markdown
 ### [0.1.7] - 2019-03-27
 #### Fixed
 - autoRun doesn't work in some cases
