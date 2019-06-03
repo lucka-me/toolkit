@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.1.8
+// @version      0.1.9
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -145,9 +145,10 @@ window.convertExifCoordinate = function() {
     var buttonConvertExif = document.getElementById("buttonConvertExif");
     buttonConvertExif.disabled = true;
     buttonConvertExif.innerHTML = "Converted";
-    var descDiv = $("#descriptionDiv");
-    descDiv.append("<br/>Converted Exif ↔︎ Original Portal: " + getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, wgs84ExifLocation.lat(), wgs84ExifLocation.lng()).toFixed(2) + "m ")
-    descDiv.append("<span class=\"clickable ingress-mid-blue\" onclick=\"showConvertedExifMarker()\">[Marker]</span>");
+    var coordinateResultDiv = $("#coordinateResultDiv");
+    if ($.trim(coordinateResultDiv.html())) coordinateResultDiv.append("<br/>");
+    coordinateResultDiv.append("Converted Exif ?? Original Portal: " + getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, wgs84ExifLocation.lat(), wgs84ExifLocation.lng()).toFixed(2) + "m ")
+    coordinateResultDiv.append("<span class=\"clickable ingress-mid-blue\" onclick=\"showConvertedExifMarker()\">[Marker]</span>");
 }
 
 window.showConvertedPortalMarker = function() {
@@ -163,11 +164,16 @@ window.showConvertedPortalMarker = function() {
 window.convertPortalCoordinate = function() {
     wgs84PortalLocation = convertToWGS84(subCtrl.pageData.lat, subCtrl.pageData.lng);
     var buttonConvertPortal = document.getElementById("buttonConvertPortal");
+    var coordinateResultDiv = $("#coordinateResultDiv");
     buttonConvertPortal.disabled = true;
     buttonConvertPortal.innerHTML = "Converted";
-    var descDiv = $("#descriptionDiv");
-    descDiv.append("<br/>Converted Portal ↔︎ Original Exif: " + getDistance(wgs84PortalLocation.lat(), wgs84PortalLocation.lng(), detectLocation.lat(), detectLocation.lng()).toFixed(2) + "m ")
-    descDiv.append("<span class=\"clickable ingress-mid-blue\" onclick=\"showConvertedPortalMarker()\">[Marker]</span>");
+    if ($.trim(coordinateResultDiv.html())) coordinateResultDiv.append("<br/>");
+    if (detectLocation) {
+        coordinateResultDiv.append("Converted Portal ?? Original Exif: " + getDistance(wgs84PortalLocation.lat(), wgs84PortalLocation.lng(), detectLocation.lat(), detectLocation.lng()).toFixed(2) + "m ");
+    } else {
+        coordinateResultDiv.append("Converted Portal: ");
+    }
+    coordinateResultDiv.append("<span class=\"clickable ingress-mid-blue\" onclick=\"showConvertedPortalMarker()\">[Marker]</span>");
 }
 
 var checkExifLocation = function(tags) {
@@ -178,15 +184,17 @@ var checkExifLocation = function(tags) {
             (tags.GPSLongitudeRef == "E" ? 1 : -1) * dmsToDeg(tags.GPSLongitude)
         );
         if (!distanceShown) {
-            var descDiv = $("#descriptionDiv");
-            descDiv.append(
-                "<br/>Distance: " + getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, detectLocation.lat(), detectLocation.lng()).toFixed(2) + "m "
+            var exifResultDiv = $("#exifResultDiv");
+            exifResultDiv.append(
+                "Distance: " + getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, detectLocation.lat(), detectLocation.lng()).toFixed(2) + "m "
             );
-            descDiv.append("<span class=\"clickable ingress-mid-blue\" onclick=\"showMarker()\">[Marker]</span>");
+            exifResultDiv.append("<span class=\"clickable ingress-mid-blue\" onclick=\"showMarker()\">[Marker]</span>");
             distanceShown = true;
-            descDiv.append("<br/><small class=\"gold\">Coordinate Conversion</small><br/>");
-            descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonConvertExif\" onclick=\"convertExifCoordinate()\">Exif</button>");
-            descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonConvertPortal\" onclick=\"convertPortalCoordinate()\">Portal</button>");
+            var buttonConvertPortal = document.getElementById("buttonConvertPortal");
+            document.getElementById("coordinateResultDiv").innerHTML = "";
+            buttonConvertPortal.disabled = false;
+            buttonConvertPortal.innerHTML = "Portal";
+            document.getElementById("buttonConvertExif").disabled = false;
         }
         buttonCheckExifLocation.disabled = true;
         buttonCheckExifLocation.innerHTML = "Location Checked";
@@ -208,9 +216,15 @@ function loadOPREV() {
     if (isScriptLoaded) return;
     if (!isButtonsAdded) {
         var descDiv = $("#descriptionDiv");
-        descDiv.append("<br/><small class=\"gold\">EXIF</small><br/>");
-        descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifAll\" onclick=\"onCheckExifAll()\">Check All</button>")
-        descDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifLocation\" onclick=\"onCheckExifLocation()\">Check Location</button>");
+        descDiv.append("<br/><small class=\"gold\">EXIF</small><br/><div id=\"exifDiv\"></div>");
+        var exifDiv = $("#exifDiv");
+        exifDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifAll\" onclick=\"onCheckExifAll()\">Check All</button>")
+        exifDiv.append("<button type=\"button\" class=\"button\" id=\"buttonCheckExifLocation\" onclick=\"onCheckExifLocation()\">Check Location</button>");
+        exifDiv.append("<div id=\"exifResultDiv\"></div>");
+        exifDiv.append("<small class=\"gold\">Coordinate Conversion</small><br/>");
+        exifDiv.append("<button type=\"button\" class=\"button\" id=\"buttonConvertPortal\" onclick=\"convertPortalCoordinate()\">Portal</button>");
+        exifDiv.append("<button type=\"button\" class=\"button\" id=\"buttonConvertExif\" disabled=\"true\" onclick=\"convertExifCoordinate()\">Exif</button>");
+        exifDiv.append("<div id=\"coordinateResultDiv\"></div>");
         isButtonsAdded = true;
     }
     if (preferences.autoRun) {

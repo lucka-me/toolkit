@@ -49,6 +49,13 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.1.9] - 2019-06-03
+#### Changed
+- Coordinate Convertion for Portal is always available now
+- UI improved
+```
+
+```markdown
 ### [0.1.8] - 2019-03-28
 #### Fixed
 - subCtrl not defined without OPR_brainStroming 
