@@ -49,6 +49,12 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.1.10] - 2019-06-06
+#### Fixed
+- Code issue
+```
+
+```markdown
 ### [0.1.9] - 2019-06-03
 #### Changed
 - Coordinate Convertion for Portal is always available now

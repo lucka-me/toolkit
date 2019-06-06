@@ -147,7 +147,7 @@ window.convertExifCoordinate = function() {
     buttonConvertExif.innerHTML = "Converted";
     var coordinateResultDiv = $("#coordinateResultDiv");
     if ($.trim(coordinateResultDiv.html())) coordinateResultDiv.append("<br/>");
-    coordinateResultDiv.append("Converted Exif ?? Original Portal: " + getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, wgs84ExifLocation.lat(), wgs84ExifLocation.lng()).toFixed(2) + "m ")
+    coordinateResultDiv.append("Converted Exif ↔︎ Original Portal: " + getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, wgs84ExifLocation.lat(), wgs84ExifLocation.lng()).toFixed(2) + "m ")
     coordinateResultDiv.append("<span class=\"clickable ingress-mid-blue\" onclick=\"showConvertedExifMarker()\">[Marker]</span>");
 }
 
@@ -169,7 +169,7 @@ window.convertPortalCoordinate = function() {
     buttonConvertPortal.innerHTML = "Converted";
     if ($.trim(coordinateResultDiv.html())) coordinateResultDiv.append("<br/>");
     if (detectLocation) {
-        coordinateResultDiv.append("Converted Portal ?? Original Exif: " + getDistance(wgs84PortalLocation.lat(), wgs84PortalLocation.lng(), detectLocation.lat(), detectLocation.lng()).toFixed(2) + "m ");
+        coordinateResultDiv.append("Converted Portal ↔︎ Original Exif: " + getDistance(wgs84PortalLocation.lat(), wgs84PortalLocation.lng(), detectLocation.lat(), detectLocation.lng()).toFixed(2) + "m ");
     } else {
         coordinateResultDiv.append("Converted Portal: ");
     }
