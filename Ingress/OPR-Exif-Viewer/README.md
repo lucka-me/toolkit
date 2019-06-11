@@ -49,6 +49,12 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.1.11] - 2019-06-11
+#### Changed
+- Load small size instead. Loading some of the full-size photos MAY ACTIVATE COOLDOWN (suspected)
+```
+
+```markdown
 ### [0.1.10] - 2019-06-06
 #### Fixed
 - Code issue

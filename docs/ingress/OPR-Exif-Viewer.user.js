@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.1.10
+// @version      0.1.11
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -94,7 +94,7 @@ var getExifTags = function(onGet) {
     }
     window.subCtrl = angular.element(document.getElementById('NewSubmissionController')).scope().subCtrl;
     var newImg = document.createElement('img');
-    newImg.src = (imgUrl + "=s0").replace("http:", "https:");
+    newImg.src = imgUrl.replace("http:", "https:");
     newImg.style.visibility = "hidden";
     newImg.onload = function() {
         EXIF.getData(newImg, function() {
