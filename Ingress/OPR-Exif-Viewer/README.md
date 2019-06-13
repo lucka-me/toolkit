@@ -49,6 +49,12 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.2.1] - 2019-06-13
+#### Fixed
+- Encoding of ↔︎
+```
+
+```markdown
 ### [0.2.0] - 2019-06-13
 #### Added
 - Support for supporting photo

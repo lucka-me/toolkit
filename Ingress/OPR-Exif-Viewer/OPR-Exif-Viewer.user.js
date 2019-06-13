@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.2.0
+// @version      0.2.1
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -261,7 +261,7 @@ const process = {
             if ($.trim(ui.div.coordinateResult.html())) ui.div.coordinateResult.append("<br/>");
             if (tags.main) {
                 let exifLocation = tags.parseLocation(tags.main);
-                ui.div.coordinateResult.append("Converted Portal ?? Original Exif: " + geoKit.getDistance(convertedPortalLocation.lat, convertedPortalLocation.lng, exifLocation.lat, exifLocation.lng).toFixed(2) + "m ");
+                ui.div.coordinateResult.append("Converted Portal ↔︎ Original Exif: " + geoKit.getDistance(convertedPortalLocation.lat, convertedPortalLocation.lng, exifLocation.lat, exifLocation.lng).toFixed(2) + "m ");
             } else {
                 ui.div.coordinateResult.append("Converted Portal: ");
             }
@@ -277,7 +277,7 @@ const process = {
             ui.button.disable(ui.button.convert[type]);
             ui.button.convert[type].html("Converted");
             if ($.trim(ui.div.coordinateResult.html())) ui.div.coordinateResult.append("<br/>");
-            ui.div.coordinateResult.append(strings.prefix + " Exif ?? Original Portal: " + geoKit.getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, convertedExifLocation.lat, convertedExifLocation.lng).toFixed(2) + "m ")
+            ui.div.coordinateResult.append(strings.prefix + " Exif ↔︎ Original Portal: " + geoKit.getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, convertedExifLocation.lat, convertedExifLocation.lng).toFixed(2) + "m ")
             let buttonShowMarker = $('<span class="clickable ingress-mid-blue">[Marker]</span>');
             buttonShowMarker.click(function() { ui.map.showMarker(convertedExifLocation, strings.markerLabel, strings.prefix + " Exif Location"); });
             ui.div.coordinateResult.append(buttonShowMarker);
