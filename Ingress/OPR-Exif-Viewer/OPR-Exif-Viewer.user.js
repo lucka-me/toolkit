@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.2.1
+// @version      0.2.2
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -43,15 +43,15 @@ const geoKit = {
             let d = 20.0 * Math.sin(6.0 * xPi) + 20.0 * Math.sin(2.0 * xPi);
             let lat = d;
             let lng = d;
-            lat += 20.0 * Math.sin(yPi) + 40.0 * Math.sin(yPi/3.0);
-            lng += 20.0 * Math.sin(xPi) + 40.0 * Math.sin(xPi/3.0);
-            lat += 160.0 * Math.sin(yPi/12.0) + 320 * Math.sin(yPi/30.0);
-            lng += 150.0 * Math.sin(xPi/12.0) + 300.0 * Math.sin(xPi/30.0);
+            lat += 20.0 * Math.sin(yPi) + 40.0 * Math.sin(yPi / 3.0);
+            lng += 20.0 * Math.sin(xPi) + 40.0 * Math.sin(xPi / 3.0);
+            lat += 160.0 * Math.sin(yPi / 12.0) + 320 * Math.sin(yPi / 30.0);
+            lng += 150.0 * Math.sin(xPi / 12.0) + 300.0 * Math.sin(xPi / 30.0);
             lat *= 2.0 / 3.0;
             lng *= 2.0 / 3.0;
             lat += -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * xy + 0.2 * absX;
             lng += 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * xy + 0.1 * absX;
-            return {lat: lat, lng: lng}
+            return { lat: lat, lng: lng };
         };
         const delta = function(lat, lng) {
             const ee = 0.00669342162296594323;
@@ -127,7 +127,7 @@ const ui = {
             });
             process.subCtrl.map2.panTo(location);
         },
-    }
+    },
 };
 
 const tags = {
@@ -143,10 +143,13 @@ const tags = {
 
 const process = {
     subCtrl: null,
-    onload: function() {
+    _intervalCode: null,
+    tryInit: function() { process._intervalCode = setInterval(process.init, 500); },
+    init: function() {
         if (process.subCtrl) return;
         let detect = angular.element(document.getElementById('NewSubmissionController')).scope().subCtrl;
         if (!detect.pageData) return;
+        clearInterval(process._intervalCode);
         process.subCtrl = detect;
 
         let descDiv = $('#descriptionDiv');
@@ -198,23 +201,26 @@ const process = {
     check: {
         main: {
             all: function() { process.check.all("main", process.subCtrl.pageData.imageUrl); },
-            location: function() { process.check.location("main", process.subCtrl.pageData.imageUrl, { label: "E", title: "Exif Location"}); },
+            location: function() { process.check.location("main", process.subCtrl.pageData.imageUrl, { label: "E", title: "Exif Location" }); },
         },
         supporting: {
             all: function() { process.check.all("supporting", process.subCtrl.pageData.supportingImageUrl); },
-            location: function() { process.check.location("supporting", process.subCtrl.pageData.supportingImageUrl, { label: "SE", title: "Supporting Exif Location"}); },
+            location: function() { process.check.location("supporting", process.subCtrl.pageData.supportingImageUrl, { label: "SE", title: "Supporting Exif Location" }); },
         },
         getTags: function(type, url, onReady) {
-            let tempTmg = document.createElement('img');
-            tempTmg.style.visibility = "hidden";
-            tempTmg.onload = function() {
-                EXIF.getData(tempTmg, function() {
+            let tempImg = document.createElement('img');
+            tempImg.style.visibility = "hidden";
+            tempImg.onload = function() {
+                EXIF.getData(tempImg, function() {
                     ui.button.check[type].enable();
                     tags[type] = EXIF.getAllTags(this);
                     onReady();
                 });
             };
-            tempTmg.src = url.replace("http:", "https:") + "=s0";
+            tempImg.onerror = function() {
+                alert("Failed to load full-size photo. Maybe access denied by Niantic.");
+            };
+            tempImg.src = url.replace("http:", "https:") + "=s0";
         },
         all: function(type, imageUrl) {
             let displayAll = function() { alert(JSON.stringify(tags[type], null, "\t")); };
@@ -285,6 +291,4 @@ const process = {
     },
 };
 
-$("portalphoto:first").find("div").find(".center-cropped-img").one("load", process.onload);
-
-window.onload = process.onload;
+process.tryInit();

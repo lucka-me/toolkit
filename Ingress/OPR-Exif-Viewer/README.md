@@ -49,6 +49,13 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.2.2] - 2019-06-18
+#### Fixed
+- UI doesn't show up sometimes
+- Minor typo
+```
+
+```markdown
 ### [0.2.1] - 2019-06-13
 #### Fixed
 - Encoding of ↔︎
