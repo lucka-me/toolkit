@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.2.3
+// @version      0.2.4
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -211,6 +211,7 @@ const process = {
             let tempImg = document.createElement('img');
             tempImg.style.visibility = "hidden";
             tempImg.onload = function() {
+                if ($.trim(ui.div.exifResult.html())) ui.div.exifResult.append("<br/>");
                 ui.div.exifResult.append("Photo size: " + tempImg.naturalWidth + "×" + tempImg.naturalHeight);
                 EXIF.getData(tempImg, function() {
                     ui.button.check[type].enable();
@@ -238,7 +239,7 @@ const process = {
                 if (tags[type].GPSLatitude && tags[type].GPSLongitude) {
                     let location = tags.parseLocation(tags[type]);
                     ui.div.exifResult.append(
-                        "Distance: " + geoKit.getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, location.lat, location.lng).toFixed(2) + "m "
+                        "<br/>Distance: " + geoKit.getDistance(subCtrl.pageData.lat, subCtrl.pageData.lng, location.lat, location.lng).toFixed(2) + "m "
                     );
                     let buttonShowMarker = $('<span class="clickable ingress-mid-blue">[Marker]</span>');
                     buttonShowMarker.click(function() { ui.map.showMarker(location, markerString.label, markerString.title); });
