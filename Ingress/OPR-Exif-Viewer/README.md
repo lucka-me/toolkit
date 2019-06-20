@@ -49,6 +49,15 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.2.3] - 2019-06-20
+#### Added
+- Photo size
+```
+
+<details><summary>Previous</summary>
+<p>
+
+```markdown
 ### [0.2.2] - 2019-06-18
 #### Fixed
 - UI doesn't show up sometimes
@@ -149,6 +158,9 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 ### [0.1.0] - 2018-12-01
 - Initial version
 ```
+
+</p>
+</details>
 
 ## Licence
 This userscript is released under the [MIT License](../../LICENSE).

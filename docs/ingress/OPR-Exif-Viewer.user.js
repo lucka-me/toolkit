@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.2.2
+// @version      0.2.3
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -51,7 +51,7 @@ const geoKit = {
             lng *= 2.0 / 3.0;
             lat += -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * xy + 0.2 * absX;
             lng += 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * xy + 0.1 * absX;
-            return { lat: lat, lng: lng }
+            return { lat: lat, lng: lng };
         };
         const delta = function(lat, lng) {
             const ee = 0.00669342162296594323;
@@ -211,6 +211,7 @@ const process = {
             let tempImg = document.createElement('img');
             tempImg.style.visibility = "hidden";
             tempImg.onload = function() {
+                ui.div.exifResult.append("Photo size: " + tempImg.naturalWidth + "×" + tempImg.naturalHeight);
                 EXIF.getData(tempImg, function() {
                     ui.button.check[type].enable();
                     tags[type] = EXIF.getAllTags(this);
