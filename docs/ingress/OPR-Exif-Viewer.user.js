@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.2.4
+// @version      0.2.5
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -267,7 +267,7 @@ const process = {
             ui.button.disable(ui.button.convert.portal);
             ui.button.convert.portal.html("Converted");
             if ($.trim(ui.div.coordinateResult.html())) ui.div.coordinateResult.append("<br/>");
-            if (tags.main) {
+            if (tags.main && tags.main.GPSLatitude) {
                 let exifLocation = tags.parseLocation(tags.main);
                 ui.div.coordinateResult.append("Converted Portal ↔︎ Original Exif: " + geoKit.getDistance(convertedPortalLocation.lat, convertedPortalLocation.lng, exifLocation.lat, exifLocation.lng).toFixed(2) + "m ");
             } else {
