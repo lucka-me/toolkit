@@ -49,13 +49,18 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
-### [0.2.5] - 2019-06-20
+### [0.2.6] - 2019-07-26
 #### Fixed
-- Convert Portal doesn't work after get exif with no location data
+- AutoRun doesn't work
 ```
 
 <details><summary>Previous</summary>
 <p>
+```markdown
+### [0.2.5] - 2019-06-20
+#### Fixed
+- Convert Portal doesn't work after get exif with no location data
+```
 
 ```markdown
 ### [0.2.4] - 2019-06-20

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OPR Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.2.5
+// @version      0.2.6
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
@@ -196,7 +196,7 @@ const process = {
         ui.div.coordinateResult = $('<div></div>');
         exifDiv.append(ui.div.coordinateResult);
 
-        if (preferences.autoRun) process.check.main;
+        if (preferences.autoRun) process.check.main.location();
     },
     check: {
         main: {
