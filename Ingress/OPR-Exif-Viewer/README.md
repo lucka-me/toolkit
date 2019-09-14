@@ -49,13 +49,23 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.2.7] - 2019-09-14
+#### Added
+- Circles of 40m and 100m
+
+#### Changed
+- Encapsulate code into exifViewer
+```
+
+<details><summary>Previous</summary>
+<p>
+
+```markdown
 ### [0.2.6] - 2019-07-26
 #### Fixed
 - AutoRun doesn't work
 ```
 
-<details><summary>Previous</summary>
-<p>
 ```markdown
 ### [0.2.5] - 2019-06-20
 #### Fixed
