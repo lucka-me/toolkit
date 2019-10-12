@@ -15,7 +15,17 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 | Item | Value | Description
 | :--- | :--- | :---
-| `autoRun`  | `true`<br/>`false` | Set to `true` if you want to get exif automatically when the page is loaded.
+| `autoRun` | `true`<br/>`false` | Set to `true` if you want to get exif automatically when the page is loaded
+| `circles` | List               | Add options to the list to display circles on the map
+
+#### Option struct for `circles` list
+
+```typescript
+{
+    radius: number, // Radius of the circle in meter
+    color: string,  // Hex color of the circle, with '#'
+}
+```
 
 ### Notice
 - It may takes a while to fetch the full-size picture and decode the exif metadata, so be a little patient please.
@@ -49,6 +59,21 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 
 ## Changelog
 ```markdown
+### [0.2.8] - 2019-10-12
+#### Added
+- Preference: circle
+
+#### Changed
+- Support Niantic Wayfarer
+
+### Removed
+- @require jQuery
+```
+
+<details><summary>Previous</summary>
+<p>
+
+```markdown
 ### [0.2.7] - 2019-09-14
 #### Added
 - Circles of 40m and 100m
@@ -56,9 +81,6 @@ From `0.1.4`, you can set the items of `preferences` to modify some functions.
 #### Changed
 - Encapsulate code into exifViewer
 ```
-
-<details><summary>Previous</summary>
-<p>
 
 ```markdown
 ### [0.2.6] - 2019-07-26

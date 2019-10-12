@@ -1,14 +1,13 @@
 // ==UserScript==
-// @name         OPR Exif Viewer
+// @name         Wayfarer Exif Viewer
 // @namespace    http://lucka.moe/
-// @version      0.2.7
+// @version      0.2.8
 // @author       lucka-me
 // @homepageURL  https://github.com/lucka-me/toolkit/tree/master/Ingress/OPR-Exif-Viewer
 // @updateURL    https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
 // @downloadURL  https://lucka.moe/toolkit/ingress/OPR-Exif-Viewer.user.js
-// @match        https://opr.ingress.com/recon
+// @match        https://wayfarer.nianticlabs.com/review*
 // @grant        none
-// @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @require      https://cdn.jsdelivr.net/npm/exif-js
 // ==/UserScript==
 
@@ -17,6 +16,10 @@ const exifViewer = {
     // Preferences BELOW
     preferences: {
         autoRun: false, // Set to true if you want to get exif automatically when the page is loaded
+        circles: [
+            { radius: 45,  color: '#F00'},
+            { radius: 100, color: '#00F' },
+        ],  // Display circles on the map
     },
     // Preferences ABOVE
 
@@ -79,16 +82,16 @@ const exifViewer = {
                     disable: () => {
                         const button = exifViewer.ui.button;
                         button.disable(button.check.main.all);
-                        button.check.main.all.html("Loading Image");
+                        button.check.main.all.innerHTML = 'Loading Image';
                         button.disable(button.check.main.location);
-                        button.check.main.location.html("Loading Image");
+                        button.check.main.location.innerHTML = 'Loading Image';
                     },
                     enable: () => {
                         const button = exifViewer.ui.button;
                         button.enable(button.check.main.all);
-                        button.check.main.all.html("All");
+                        button.check.main.all.innerHTML = 'All';
                         button.enable(button.check.main.location);
-                        button.check.main.location.html("Location");
+                        button.check.main.location.innerHTML = 'Location';
                     },
                 },
                 supporting: {
@@ -96,22 +99,29 @@ const exifViewer = {
                     disable: () => {
                         const button = exifViewer.ui.button;
                         button.disable(button.check.supporting.all);
-                        button.check.supporting.all.html("Loading Image");
+                        button.check.supporting.all.innerHTML = 'Loading Image';
                         button.disable(button.check.supporting.location);
-                        button.check.supporting.location.html("Loading Image");
+                        button.check.supporting.location.innerHTML = 'Loading Image';
                     },
                     enable: () => {
                         const button = exifViewer.ui.button;
                         button.enable(button.check.supporting.all);
-                        button.check.supporting.all.html("All (Supporting)");
+                        button.check.supporting.all.innerHTML = 'All (Supporting)';
                         button.enable(button.check.supporting.location);
-                        button.check.supporting.location.html("Location (Supporting)");
+                        button.check.supporting.location.innerHTML = 'Location (Supporting)';
                     },
                 },
             },
             convert: { portal: null, main: null, supporting: null, },
-            disable: (button) => { button.prop("disabled", true ); },
-            enable:  (button) => { button.prop("disabled", false); },
+            disable: (button) => button.disabled = true ,
+            enable:  (button) => button.disabled = false,
+            generate: (text) => {
+                const result = document.createElement('button');
+                result.className = 'button-secondary';
+                result.style.margin = '0.3em';
+                result.innerHTML = text;
+                return result;
+            },
         },
         map: {
             showMarker: function(location, label, title) {
@@ -130,8 +140,8 @@ const exifViewer = {
         main: null, supporting: null,
         parseLocation: (targetTags) => {
             return {
-                lat: (targetTags.GPSLatitudeRef  == "N" ? 1 : -1) * geoKit.dmsToDeg(targetTags.GPSLatitude ),
-                lng: (targetTags.GPSLongitudeRef == "E" ? 1 : -1) * geoKit.dmsToDeg(targetTags.GPSLongitude)
+                lat: (targetTags.GPSLatitudeRef  == "N" ? 1 : -1) * exifViewer.geoKit.dmsToDeg(targetTags.GPSLatitude ),
+                lng: (targetTags.GPSLongitudeRef == "E" ? 1 : -1) * exifViewer.geoKit.dmsToDeg(targetTags.GPSLongitude)
             };
         },
     },
@@ -148,74 +158,88 @@ const exifViewer = {
             if (!detect.pageData) return;
             clearInterval(this._intervalCode);
             process.subCtrl = detect;
-    
-            const descDiv = $('#descriptionDiv');
-            descDiv.append('<br/><small class="gold">EXIF</small><br/>');
-            const exifDiv = $('<div></div>');
-            descDiv.append(exifDiv);
+
+            const exifCard = document.createElement('div');
+            exifCard.id = 'exif-card';
+            exifCard.className = 'card card--expand';
+            const cardTitle = document.createElement('div');
+            cardTitle.className = 'card__header card-header';
+            const cardTitleContent = document.createElement('div');
+            const cardTitleHeader = document.createElement('h4');
+            cardTitleHeader.className = 'card-header__title';
+            cardTitleHeader.innerHTML = 'EXIF';
+            cardTitleContent.appendChild(cardTitleHeader);
+            cardTitle.appendChild(cardTitleContent);
+            exifCard.appendChild(cardTitleContent);
+
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card__body';
+            const cardBodyContent = document.createElement('div');
+            cardBodyContent.className = 'flexbox-grow supporting-central-field';
 
             const ui = exifViewer.ui;
-    
-            ui.button.check.main.all = $('<button type="button" class="button">All</button>');
-            ui.button.check.main.all.click(process.check.main.all);
-            exifDiv.append(ui.button.check.main.all);
-    
-            ui.button.check.main.location = $('<button type="button" class="button">Location</button>');
-            ui.button.check.main.location.click(process.check.main.location);
-            exifDiv.append(ui.button.check.main.location);
-    
-            if (process.subCtrl.pageData.supportingImageUrl) {
-                ui.button.check.supporting.all = $('<button type="button" class="button">All (Supporting)</button>');
-                ui.button.check.supporting.all.click(process.check.supporting.all);
-                exifDiv.append(ui.button.check.supporting.all);
-    
-                ui.button.check.supporting.location = $('<button type="button" class="button">Location (Supporting)</button>');
-                ui.button.check.supporting.location.click(process.check.supporting.location);
-                exifDiv.append(ui.button.check.supporting.location);
-            }
-    
-            ui.div.exifResult = $('<div></div>');
-            exifDiv.append(ui.div.exifResult);
-            exifDiv.append("<small class=\"gold\">Coordinate Conversion</small><br/>");
-    
-            ui.button.convert.portal = $('<button type="button" class="button">Portal</button>');
-            ui.button.convert.portal.click(process.convert.portal);
-            exifDiv.append(ui.button.convert.portal);
-    
-            ui.button.convert.main = $('<button type="button" class="button" disabled="true">Exif</button>');
-            ui.button.convert.main.click(process.convert.main);
-            exifDiv.append(ui.button.convert.main);
-    
-            if (process.subCtrl.pageData.supportingImageUrl) {
-                ui.button.convert.supporting = $('<button type="button" class="button" disabled="true">Exif (Supporting)</button>');
-                ui.button.convert.supporting.click(process.convert.supporting);
-                exifDiv.append(ui.button.convert.supporting);
-            }
-    
-            ui.div.coordinateResult = $('<div></div>');
-            exifDiv.append(ui.div.coordinateResult);
 
-            new google.maps.Circle({
-                strokeColor: "#00F",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: "#00F",
-                fillOpacity: 0.2,
-                map: process.subCtrl.map2,
-                center: { lat: process.subCtrl.pageData.lat, lng: process.subCtrl.pageData.lng },
-                radius: 100
-            });
+            ui.button.check.main.all = ui.button.generate('All');
+            ui.button.check.main.all.addEventListener('click', process.check.main.all);
+            cardBodyContent.appendChild(ui.button.check.main.all);
 
-            new google.maps.Circle({
-                strokeColor: "#F00",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: "#F00",
-                fillOpacity: 0.2,
-                map: process.subCtrl.map2,
-                center: { lat: process.subCtrl.pageData.lat, lng: process.subCtrl.pageData.lng },
-                radius: 40
-            });
+            ui.button.check.main.location = ui.button.generate('Location');
+            ui.button.check.main.location.addEventListener('click', process.check.main.location);
+            cardBodyContent.appendChild(ui.button.check.main.location);
+
+            if (process.subCtrl.pageData.supportingImageUrl) {
+                ui.button.check.supporting.all = ui.button.generate('All (Supporting)');
+                ui.button.check.supporting.all.addEventListener('click', process.check.supporting.all);
+                cardBodyContent.appendChild(ui.button.check.supporting.all);
+
+                ui.button.check.supporting.location = ui.button.generate('Location (Supporting)');
+                ui.button.check.supporting.location.addEventListener('click', process.check.supporting.location);
+                cardBodyContent.appendChild(ui.button.check.supporting.location);
+            }
+
+            ui.div.exifResult = document.createElement('div');
+            cardBodyContent.appendChild(ui.div.exifResult);
+            
+            const coordConvertTitle = document.createElement('p');
+            coordConvertTitle.innerHTML = 'Coordinate Conversion';
+            cardBodyContent.appendChild(coordConvertTitle);
+
+            ui.button.convert.portal = ui.button.generate('Portal');
+            ui.button.convert.portal.addEventListener('click', process.convert.portal);
+            cardBodyContent.appendChild(ui.button.convert.portal);
+
+            ui.button.convert.main = ui.button.generate('Exif');
+            ui.button.convert.main.addEventListener('click', process.convert.main);
+            ui.button.convert.main.disabled = true;
+            cardBodyContent.appendChild(ui.button.convert.main);
+
+            if (process.subCtrl.pageData.supportingImageUrl) {
+                ui.button.convert.supporting = ui.button.generate('Exif (Supporting)');
+                ui.button.convert.supporting.addEventListener('click', process.convert.supporting);
+                ui.button.convert.supporting.disabled = true;
+                cardBodyContent.appendChild(ui.button.convert.supporting);
+            }
+
+            ui.div.coordinateResult = document.createElement('div');
+            cardBodyContent.appendChild(ui.div.coordinateResult);
+
+            exifCard.appendChild(cardBodyContent);
+
+            const supportingCard = document.querySelector('#supporting-card');
+            supportingCard.parentNode.insertBefore(exifCard, supportingCard.nextSibling);
+
+            for (const circleOption of exifViewer.preferences.circles) {
+                new google.maps.Circle({
+                    strokeColor: circleOption.color,
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: circleOption.color,
+                    fillOpacity: 0.2,
+                    map: process.subCtrl.map2,
+                    center: { lat: process.subCtrl.pageData.lat, lng: process.subCtrl.pageData.lng },
+                    radius: circleOption.radius
+                });
+            }
     
             if (exifViewer.preferences.autoRun) process.check.main.location();
         },
@@ -233,8 +257,8 @@ const exifViewer = {
                 tempImg.style.visibility = "hidden";
                 tempImg.onload = () => {
                     const ui = exifViewer.ui;
-                    if ($.trim(ui.div.exifResult.html())) ui.div.exifResult.append("<br/>");
-                    ui.div.exifResult.append(`Photo size: ${tempImg.naturalWidth} × ${tempImg.naturalHeight}`);
+                    if (ui.div.exifResult.childNodes.length > 0) ui.div.exifResult.appendChild(document.createElement('br'));
+                    ui.div.exifResult.appendChild(document.createTextNode(`Photo size: ${tempImg.naturalWidth} × ${tempImg.naturalHeight}`));
                     EXIF.getData(tempImg, () => {
                         ui.button.check[type].enable();
                         exifViewer.data[type] = EXIF.getAllTags(this);
@@ -261,19 +285,20 @@ const exifViewer = {
                     ui.button.disable(ui.button.check[type].location);
                     if (exifViewer.data[type].GPSLatitude && exifViewer.data[type].GPSLongitude) {
                         const location = data.parseLocation(data[type]);
-                        ui.div.exifResult.append(
-                            "<br/>Distance: " + exifViewer.geoKit.getDistance(exifViewer.process.subCtrl.pageData.lat, exifViewer.process.subCtrl.pageData.lng, location.lat, location.lng).toFixed(2) + "m "
-                        );
-                        const buttonShowMarker = $('<span class="clickable ingress-mid-blue">[Marker]</span>');
-                        buttonShowMarker.click(() => { ui.map.showMarker(location, markerString.label, markerString.title); });
-                        ui.div.exifResult.append(buttonShowMarker);
-                        ui.div.coordinateResult.html("");
+                        ui.div.exifResult.appendChild(document.createElement('br'));
+                        ui.div.exifResult.appendChild(document.createTextNode(`Distance: ${exifViewer.geoKit.getDistance(exifViewer.process.subCtrl.pageData.lat, exifViewer.process.subCtrl.pageData.lng, location.lat, location.lng).toFixed(2)} m`));
+                        const buttonShowMarker = document.createElement('span');
+                        buttonShowMarker.className = 'clickable ingress-mid-blue';
+                        buttonShowMarker.innerHTML = '[Marker]';
+                        buttonShowMarker.addEventListener('click', () => { ui.map.showMarker(location, markerString.label, markerString.title); });
+                        ui.div.exifResult.appendChild(buttonShowMarker);
+                        ui.div.coordinateResult.innerHTML = '';
                         ui.button.enable(ui.button.convert.portal);
-                        ui.button.convert.portal.html("Portal");
+                        ui.button.convert.portal.innerHTML = 'Portal';
                         ui.button.enable(ui.button.convert[type]);
-                        ui.button.check[type].location.html("Location Checked");
+                        ui.button.check[type].location.innerHTML = 'Location Checked';
                     } else {
-                        ui.button.check[type].location.html("No Location Data");
+                        ui.button.check[type].location.innerHTML = 'No Location Data';
                     }
                 };
                 if (exifViewer.data[type]) {
@@ -289,17 +314,19 @@ const exifViewer = {
                 const ui = exifViewer.ui;
                 const convertedPortalLocation = exifViewer.geoKit.convertToWGS84(exifViewer.process.subCtrl.pageData.lat, exifViewer.process.subCtrl.pageData.lng);
                 ui.button.disable(ui.button.convert.portal);
-                ui.button.convert.portal.html("Converted");
-                if ($.trim(ui.div.coordinateResult.html())) ui.div.coordinateResult.append("<br/>");
+                ui.button.convert.portal.innerHTML = 'Converted';
+                if (ui.div.coordinateResult.childNodes.length > 0) ui.div.coordinateResult.appendChild(document.createElement('br'));
                 if (exifViewer.data.main && exifViewer.data.main.GPSLatitude) {
                     const exifLocation = exifViewer.data.parseLocation(exifViewer.data.main);
-                    ui.div.coordinateResult.append("Converted Portal ↔︎ Original Exif: " + exifViewer.geoKit.getDistance(convertedPortalLocation.lat, convertedPortalLocation.lng, exifLocation.lat, exifLocation.lng).toFixed(2) + "m ");
+                    ui.div.coordinateResult.appendChild(document.createTextNode(`Converted Portal ↔︎ Original Exif: ${exifViewer.geoKit.getDistance(convertedPortalLocation.lat, convertedPortalLocation.lng, exifLocation.lat, exifLocation.lng).toFixed(2)} m`));
                 } else {
-                    ui.div.coordinateResult.append("Converted Portal: ");
+                    ui.div.coordinateResult.appendChild(document.createTextNode("Converted Portal: "));
                 }
-                const buttonShowMarker = $('<span class="clickable ingress-mid-blue">[Marker]</span>');
-                buttonShowMarker.click(function() { ui.map.showMarker(convertedPortalLocation, "CP", "Converted Portal Location"); });
-                ui.div.coordinateResult.append(buttonShowMarker);
+                const buttonShowMarker = document.createElement('span');
+                buttonShowMarker.className = 'clickable ingress-mid-blue';
+                buttonShowMarker.innerHTML = '[Marker]';
+                buttonShowMarker.addEventListener('click', () => { ui.map.showMarker(convertedPortalLocation, "CP", "Converted Portal Location"); });
+                ui.div.coordinateResult.appendChild(buttonShowMarker);
             },
             main: () => { exifViewer.process.convert.exif("main", { prefix: "Converted", markerLabel: "CE" }); },
             supporting: () => { exifViewer.process.convert.exif("supporting", { prefix: "Converted Supporting", markerLabel: "CSE" }); },
@@ -308,12 +335,14 @@ const exifViewer = {
                 const exifLocation = exifViewer.data.parseLocation(exifViewer.data[type]);
                 const convertedExifLocation = exifViewer.geoKit.convertToWGS84(exifLocation.lat, exifLocation.lng);
                 ui.button.disable(ui.button.convert[type]);
-                ui.button.convert[type].html("Converted");
-                if ($.trim(ui.div.coordinateResult.html())) ui.div.coordinateResult.append("<br/>");
-                ui.div.coordinateResult.append(strings.prefix + " Exif ↔︎ Original Portal: " + geoKit.getDistance(exifViewer.process.subCtrl.pageData.lat, exifViewer.process.subCtrl.pageData.lng, convertedExifLocation.lat, convertedExifLocation.lng).toFixed(2) + "m ")
-                const buttonShowMarker = $('<span class="clickable ingress-mid-blue">[Marker]</span>');
-                buttonShowMarker.click(() => { ui.map.showMarker(convertedExifLocation, strings.markerLabel, strings.prefix + " Exif Location"); });
-                ui.div.coordinateResult.append(buttonShowMarker);
+                ui.button.convert[type].innerHTML = 'Converted';
+                if (ui.div.coordinateResult.childNodes.length > 0) ui.div.coordinateResult.appendChild(document.createElement('br'));
+                ui.div.coordinateResult.appendChild(document.createTextNode(`${strings.prefix} Exif ↔︎ Original Portal: ${exifViewer.geoKit.getDistance(exifViewer.process.subCtrl.pageData.lat, exifViewer.process.subCtrl.pageData.lng, convertedExifLocation.lat, convertedExifLocation.lng).toFixed(2)} m`));
+                const buttonShowMarker = document.createElement('span');
+                buttonShowMarker.className = 'clickable ingress-mid-blue';
+                buttonShowMarker.innerHTML = '[Marker]';
+                buttonShowMarker.addEventListener('click', () => { ui.map.showMarker(convertedExifLocation, strings.markerLabel, strings.prefix + " Exif Location"); });
+                ui.div.coordinateResult.appendChild(buttonShowMarker);
             },
         },
     },
