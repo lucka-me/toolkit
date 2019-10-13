@@ -1,0 +1,69 @@
+@media (prefers-color-scheme: dark) {
+    
+    /* White Text */
+    body, span,
+    #low-quality-modal,
+    .button-secondary,
+    .card-header__title,
+    .title-description,
+    .text-input.text-input,
+    textarea,
+    #WhatIsItController .categories-display .categories-display-container ul li .categories-display-name {
+        color: #fff !important;
+    }
+
+    /* 0dp */
+    body {
+        background-color: #000 !important;
+    }
+
+    /* 2dp */
+    .card,
+    .gm-style .gm-style-iw-c {
+        background-color: #222 !important;
+    }
+    
+    /* 4dp */
+    button[disabled] {
+        background-color: #272727 !important;
+    }
+    
+    /* 8dp */
+    .button-secondary {
+        background-color: #2e2e2e !important;
+    }
+    
+    /* 16dp */
+    .header,
+    .modal-content {
+        background-color: #353535 !important;
+    }
+
+    /* Misc */
+    .button-primary,
+    .button-secondary,
+    .card,
+    #WhatIsItController .categories-display .categories-display-container {
+        box-shadow: none !important;
+    }
+
+    button[disabled] {
+        color: #666 !important;
+    }
+    
+    .supporting-central-field,
+    .modal-body {
+        background: none !important;
+    }
+
+    .selected > .star-gray,
+    .star-red-orange {
+        color: #E47252 !important;
+    }
+    
+    label::before,
+    .arrow-element::before {
+        filter: none !important;
+    }
+    
+}
