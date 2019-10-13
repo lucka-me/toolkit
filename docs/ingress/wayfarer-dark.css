@@ -1,19 +1,25 @@
+/******************************************************************************/
+/* Dark Mode CSS for Niantic Wayfarer Review Page                 by lucka-me */
+/* Licenced under MIT                                               ver 0.1.1 */
+/******************************************************************************/
+
 @media (prefers-color-scheme: dark) {
     
     /* White Text */
-    body, span,
+    body, span, textarea,
     #low-quality-modal,
     .button-secondary,
     .card-header__title,
     .title-description,
     .text-input.text-input,
-    textarea,
-    #WhatIsItController .categories-display .categories-display-container ul li .categories-display-name {
+    .supporting-statement-central-field p,
+    .categories-display-name {
         color: #fff !important;
     }
 
     /* 0dp */
-    body {
+    body,
+    .niantic-loader {
         background-color: #000 !important;
     }
 
@@ -52,6 +58,7 @@
     }
     
     .supporting-central-field,
+    .supporting-statement-central-field,
     .modal-body {
         background: none !important;
     }
@@ -62,8 +69,15 @@
     }
     
     label::before,
-    .arrow-element::before {
+    .arrow-element::before,
+    .niantic-loader__logo {
         filter: none !important;
+    }
+    
+    .niantic-wayfarer-logo img,
+    .reset-map-icon::before,
+    .categories-display-result::before {
+        filter: invert(1);
     }
     
 }

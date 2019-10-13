@@ -2,8 +2,9 @@
 Enable dark mode for [Niantic Wayfarer review page](https://wayfarer.nianticlabs.com/review).
 
 ## Usage
-1. Load CSS with a simple userscript: [Install](https://lucka.moe/toolkit/ingress/Wayfarer-Dark-Mode.user.js)
-2. Load CSS with userstyles manager like [Stylus](https://github.com/openstyles/stylus "Github")
+Load [this CSS](https://lucka.moe/toolkit/ingress/wayfarer-dark.css) with:
+1. A simple userscript: [Install](https://lucka.moe/toolkit/ingress/Wayfarer-Dark-Mode.user.js)
+2. Userstyles manager like [Stylus](https://github.com/openstyles/stylus "Github")
 
 ## References
 - [Dark Mode in CSS | CSS-Tricks](https://css-tricks.com/dark-modes-with-css/)  
@@ -12,6 +13,19 @@ Enable dark mode for [Niantic Wayfarer review page](https://wayfarer.nianticlabs
 
 ## Changelog
 ```markdown
+### [0.1.1] - 2019-10-13
+#### Changed
+- CSS improved
+- Run script when body exists
+```
+
+<details><summary>Previous</summary>
+<p>
+
+```markdown
 ### [0.1.0] - 2019-10-13
 Initial version
 ```
+
+</p>
+</details>
