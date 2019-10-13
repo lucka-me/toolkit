@@ -1,83 +1,117 @@
 /******************************************************************************/
-/* Dark Mode CSS for Niantic Wayfarer Review Page                 by lucka-me */
-/* Licenced under MIT                                               ver 0.1.1 */
+/* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
+/* Licenced under MIT                                               ver 0.1.3 */
 /******************************************************************************/
 
+
 @media (prefers-color-scheme: dark) {
-    
-    /* White Text */
-    body, span, textarea,
-    #low-quality-modal,
-    .button-secondary,
-    .card-header__title,
-    .title-description,
-    .text-input.text-input,
-    .supporting-statement-central-field p,
-    .categories-display-name {
-        color: #fff !important;
-    }
+    /**
+     * If you want to follow the browser / system color mode automatically in
+     * real-time, put all other rules inside this rule.
+     */
+}
 
-    /* 0dp */
-    body,
-    .niantic-loader {
-        background-color: #000 !important;
-    }
+/* White Text */
+body, h1, h2, h3, span, textarea,
+#low-quality-modal,
+#performance,
+.button-secondary,
+.card-header__title,
+.title-description,
+.text-input.text-input,
+.nomination-title,
+.nomination-category-header,
+.nomination-category-body,
+.nom-edit-input input,
+.supporting-statement-central-field p,
+.categories-display-name,
+.settings-item .additional-description {
+    color: #fff !important;
+}
 
-    /* 2dp */
-    .card,
-    .gm-style .gm-style-iw-c {
-        background-color: #222 !important;
-    }
-    
-    /* 4dp */
-    button[disabled] {
-        background-color: #272727 !important;
-    }
-    
-    /* 8dp */
-    .button-secondary {
-        background-color: #2e2e2e !important;
-    }
-    
-    /* 16dp */
-    .header,
-    .modal-content {
-        background-color: #353535 !important;
-    }
+/* 0dp */
+body,
+.niantic-loader {
+    background-color: #000 !important;
+}
 
-    /* Misc */
-    .button-primary,
-    .button-secondary,
-    .card,
-    #WhatIsItController .categories-display .categories-display-container {
-        box-shadow: none !important;
-    }
+/* 2dp */
+#gallery-info,
+.card,
+.gm-style .gm-style-iw-c {
+    background-color: #222 !important;
+}
 
-    button[disabled] {
-        color: #666 !important;
-    }
-    
-    .supporting-central-field,
-    .supporting-statement-central-field,
-    .modal-body {
-        background: none !important;
-    }
+/* 4dp */
+button[disabled] {
+    background-color: #272727 !important;
+}
 
-    .selected > .star-gray,
-    .star-red-orange {
-        color: #E47252 !important;
-    }
-    
-    label::before,
-    .arrow-element::before,
-    .niantic-loader__logo {
-        filter: none !important;
-    }
-    
-    .niantic-wayfarer-logo img,
-    .reset-map-icon::before,
-    .categories-display-result::before {
-        filter: invert(1);
-    }
-    
+/* 8dp */
+.button-secondary {
+    background-color: #2e2e2e !important;
+}
+
+/* 16dp */
+#nom-options-modal,
+.header,
+.modal-content {
+    background-color: #353535 !important;
+}
+
+/* Misc */
+.button-primary,
+.button-secondary,
+.card,
+#WhatIsItController .categories-display .categories-display-container {
+    box-shadow: none !important;
+}
+
+button[disabled] {
+    color: #666 !important;
+}
+
+#nom-search-title {
+    background: #000 !important;
+}
+
+.supporting-central-field,
+.supporting-statement-central-field,
+.modal-body,
+.nom-edit-input {
+    background: none !important;
+}
+
+.selected > .star-gray,
+.star-red-orange {
+    color: #E47252 !important;
+}
+
+.radio-btn {
+    border-color: #FFF !important;
+}
+
+.radio-btn:checked {
+    background-color: #FFF !important;
+}
+
+label::before,
+.arrow-element::before,
+.niantic-loader__logo {
+    filter: none !important;
+}
+
+#nom-options-button img,
+#nom-table-title--arrow::before,
+.niantic-wayfarer-logo img,
+.reset-map-icon::before,
+.categories-display-result::before,
+.item-edit::before {
+    filter: invert(1);
+}
+
+/* Fix image ratio in nomination card */
+.nom-img img {
+    object-fit: cover;
+    object-position: center;
 }
