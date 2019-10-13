@@ -10,6 +10,7 @@ A collection of tools made by Lucka.
   - [ISODATA 影像分类器](https://github.com/lucka-me/ISODATA-python)<sup>Independent</sup>
 - [Ingress](/Ingress/)
   - [OPR Exif 插件](/Ingress/OPR-Exif-Viewer/)
+  - [Wayfarer 暗色模式](/Ingress/Wayfarer-Dark-Mode/)
 - [LBS](/LBS/)
   - [LocationKit](/LBS/LocationKit/)
 - Music
