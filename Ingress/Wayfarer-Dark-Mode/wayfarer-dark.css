@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                               ver 0.1.3 */
+/* Licenced under MIT                                               ver 0.1.4 */
 /******************************************************************************/
 
 
@@ -54,6 +54,7 @@ button[disabled] {
 
 /* 16dp */
 #nom-options-modal,
+#nom-upgrade-modal,
 .header,
 .modal-content {
     background-color: #353535 !important;
@@ -93,6 +94,14 @@ button[disabled] {
 
 .radio-btn:checked {
     background-color: #FFF !important;
+}
+
+.button-upgrade {
+    background-color: #9370DB !important;
+}
+
+.button-upgrade:hover:not([disabled]) {
+    background-color: #8B4AE8 !important;
 }
 
 label::before,
