@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                               ver 0.1.4 */
+/* Licenced under MIT                                               ver 0.1.5 */
 /******************************************************************************/
 
 
@@ -53,10 +53,12 @@ button[disabled] {
 }
 
 /* 16dp */
+ark-cookiebar,
 #nom-options-modal,
 #nom-upgrade-modal,
 .header,
-.modal-content {
+.modal-content,
+.ark-cookiebar-buttons button {
     background-color: #353535 !important;
 }
 
