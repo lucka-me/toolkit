@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                               ver 0.1.5 */
+/* Licenced under MIT                                               ver 0.1.6 */
 /******************************************************************************/
 
 
@@ -26,7 +26,7 @@ body, h1, h2, h3, span, textarea,
 .supporting-statement-central-field p,
 .categories-display-name,
 .settings-item .additional-description {
-    color: #fff !important;
+    color: #ddd !important;
 }
 
 /* 0dp */
@@ -37,6 +37,7 @@ body,
 
 /* 2dp */
 #gallery-info,
+.known-information-need-edit,
 .card,
 .gm-style .gm-style-iw-c {
     background-color: #222 !important;
@@ -90,6 +91,10 @@ button[disabled] {
     color: #E47252 !important;
 }
 
+.ingress-mid-blue {
+    color: #008780 !important;
+}
+
 .radio-btn {
     border-color: #FFF !important;
 }
@@ -106,6 +111,10 @@ button[disabled] {
     background-color: #8B4AE8 !important;
 }
 
+.cancel-btn::before {
+    background: url(https://wayfarer.nianticlabs.com/img/cancel.svg) !important;
+}
+
 label::before,
 .arrow-element::before,
 .niantic-loader__logo {
@@ -117,7 +126,8 @@ label::before,
 .niantic-wayfarer-logo img,
 .reset-map-icon::before,
 .categories-display-result::before,
-.item-edit::before {
+.item-edit::before,
+.cancel-btn::before {
     filter: invert(1);
 }
 
