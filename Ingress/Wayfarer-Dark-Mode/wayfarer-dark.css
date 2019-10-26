@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                               ver 0.1.6 */
+/* Licenced under MIT                                               ver 0.1.7 */
 /******************************************************************************/
 
 
@@ -25,7 +25,8 @@ body, h1, h2, h3, span, textarea,
 .nom-edit-input input,
 .supporting-statement-central-field p,
 .categories-display-name,
-.settings-item .additional-description {
+.settings-item .additional-description,
+.dropdown #simple-dropdown {
     color: #ddd !important;
 }
 
@@ -59,7 +60,8 @@ ark-cookiebar,
 #nom-upgrade-modal,
 .header,
 .modal-content,
-.ark-cookiebar-buttons button {
+.ark-cookiebar-buttons button,
+.dropdown .dropdown-menu {
     background-color: #353535 !important;
 }
 
@@ -82,7 +84,8 @@ button[disabled] {
 .supporting-central-field,
 .supporting-statement-central-field,
 .modal-body,
-.nom-edit-input {
+.nom-edit-input,
+.breadcrumb {
     background: none !important;
 }
 

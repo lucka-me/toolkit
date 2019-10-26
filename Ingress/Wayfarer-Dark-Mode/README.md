@@ -1,7 +1,7 @@
 # Dark Mode CSS for Niantic Wayfarer
 Enable dark mode for [Niantic Wayfarer](https://wayfarer.nianticlabs.com/).
 
-[![Userscript version](https://img.shields.io/badge/css-v0.1.6-green)](https://lucka.moe/toolkit/ingress/wayfarer-dark.css) [![Userscript version](https://img.shields.io/badge/userscript-v0.1.3-green)](https://lucka.moe/toolkit/ingress/Wayfarer-Dark-Mode.user.js)
+[![Userscript version](https://img.shields.io/badge/css-v0.1.7-green)](https://lucka.moe/toolkit/ingress/wayfarer-dark.css) [![Userscript version](https://img.shields.io/badge/userscript-v0.1.3-green)](https://lucka.moe/toolkit/ingress/Wayfarer-Dark-Mode.user.js)
 
 ## Usage
 Load [this CSS](https://lucka.moe/toolkit/ingress/wayfarer-dark.css) with:
@@ -30,6 +30,16 @@ If you use CSS with:
 
 ## Changelog
 ```markdown
+### [0.1.7] - 2019-10-26
+#### Fixed
+- Title background in sub-page of settings
+- Dropdown css in settings
+```
+
+<details><summary>Previous</summary>
+<p>
+
+```markdown
 ### [0.1.6] - 2019-10-16
 #### Changed
 - Text color
@@ -39,9 +49,6 @@ If you use CSS with:
 - Cancel button in dialog
 - .ingress-mid-blue
 ```
-
-<details><summary>Previous</summary>
-<p>
 
 ```markdown
 ### [0.1.5] - 2019-10-15
