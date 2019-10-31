@@ -33,6 +33,7 @@ If you use CSS with:
 ### [0.1.8] - 2019-10-26
 #### Changed
 - Update for category selector
+- Update for known-infomation card
 ```
 
 <details><summary>Previous</summary>

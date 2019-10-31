@@ -25,6 +25,7 @@ body, h1, h2, h3, span, textarea,
 .nom-edit-input input,
 .supporting-statement-central-field p,
 .category__display-name,
+.known-information,
 .settings-item .additional-description,
 .dropdown #simple-dropdown {
     color: #ddd !important;
@@ -71,6 +72,10 @@ ark-cookiebar,
 .card,
 #WhatIsItController .categories-display .categories-display-container {
     box-shadow: none !important;
+}
+
+.card--information {
+    border: none !important;
 }
 
 button[disabled] {
