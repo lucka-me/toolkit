@@ -30,14 +30,20 @@ If you use CSS with:
 
 ## Changelog
 ```markdown
+### [0.1.8] - 2019-10-26
+#### Changed
+- Update for category selector
+```
+
+<details><summary>Previous</summary>
+<p>
+
+```markdown
 ### [0.1.7] - 2019-10-26
 #### Fixed
 - Title background in sub-page of settings
 - Dropdown css in settings
 ```
-
-<details><summary>Previous</summary>
-<p>
 
 ```markdown
 ### [0.1.6] - 2019-10-16

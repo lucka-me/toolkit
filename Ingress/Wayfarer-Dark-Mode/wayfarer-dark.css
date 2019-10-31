@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                               ver 0.1.7 */
+/* Licenced under MIT                                               ver 0.1.8 */
 /******************************************************************************/
 
 
@@ -24,7 +24,7 @@ body, h1, h2, h3, span, textarea,
 .nomination-category-body,
 .nom-edit-input input,
 .supporting-statement-central-field p,
-.categories-display-name,
+.category__display-name,
 .settings-item .additional-description,
 .dropdown #simple-dropdown {
     color: #ddd !important;
@@ -128,7 +128,7 @@ label::before,
 #nom-table-title--arrow::before,
 .niantic-wayfarer-logo img,
 .reset-map-icon::before,
-.categories-display-result::before,
+.category__arrow-element,
 .item-edit::before,
 .cancel-btn::before {
     filter: invert(1);
