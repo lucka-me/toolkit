@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                               ver 0.1.9 */
+/* Licenced under MIT                                              ver 0.1.10 */
 /******************************************************************************/
 
 
@@ -34,6 +34,7 @@ body, h1, h2, h3, span, textarea,
 
 /* 0dp */
 body,
+.container,
 .niantic-loader {
     background-color: #000 !important;
 }
