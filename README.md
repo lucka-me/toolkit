@@ -3,7 +3,8 @@ A collection of tools made by Lucka.
 
 ## Catalog
 - [神奇宝贝百科](/52Poké-Wiki/)
-  - [服饰列表生成器](/52Poké-Wiki/ClothTableGenerator/)
+  - [服饰列表生成器-USUM](/52Poké-Wiki/ClothTableGenerator-USUM/)
+  - [简繁转换代码生成器](/52Poké-Wiki/ZhConvertGenerator/)
 - [地理信息科学](/Geoinformatic/)
   - [RTS 转换器](/Geoinformatic/RTSConverter/)
   - [DEM 生成器](/Geoinformatic/DEMBuilder/)
