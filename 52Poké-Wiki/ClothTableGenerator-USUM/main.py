@@ -2,7 +2,7 @@
 # coding: utf-8
 
 """
-神奇寶貝百科服飾列表生成器
+神奇寶貝百科服飾列表生成器 for USUM
 Author:     Lucka
 Version:    0.4.3
 Licence:    MIT
