@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                              ver 0.1.10 */
+/* Licenced under MIT                                              ver 0.1.11 */
 /******************************************************************************/
 
 
@@ -28,7 +28,8 @@ body, h1, h2, h3, span, textarea,
 .known-information,
 .settings-item .additional-description,
 .dropdown #simple-dropdown,
-#help-section-content h3 b {
+#help-section-content h3 b,
+.categories-display-result span:not(:first-child)::before {
     color: #ddd !important;
 }
 
@@ -53,7 +54,8 @@ button[disabled] {
 }
 
 /* 8dp */
-.button-secondary {
+.button-secondary,
+.suggestions-check label {
     background-color: #2e2e2e !important;
 }
 
@@ -72,6 +74,7 @@ ark-cookiebar,
 .button-primary,
 .button-secondary,
 .card,
+.suggestions-check label,
 #WhatIsItController .categories-display .categories-display-container {
     box-shadow: none !important;
 }
@@ -139,6 +142,10 @@ label::before,
 .item-edit::before,
 .cancel-btn::before {
     filter: invert(1);
+}
+
+.suggestions-check input[type="radio"]:checked + label {
+    background: #a50300 !important;
 }
 
 /* Fix image ratio in nomination card */

@@ -1,7 +1,7 @@
 # Dark Mode CSS for Niantic Wayfarer
 Enable dark mode for [Niantic Wayfarer](https://wayfarer.nianticlabs.com/).
 
-[![Userscript version](https://img.shields.io/badge/css-v0.1.10-green)](https://lucka.moe/toolkit/ingress/wayfarer-dark.css) [![Userscript version](https://img.shields.io/badge/userscript-v0.1.3-green)](https://lucka.moe/toolkit/ingress/Wayfarer-Dark-Mode.user.js)
+[![Userscript version](https://img.shields.io/badge/css-v0.1.11-green)](https://lucka.moe/toolkit/ingress/wayfarer-dark.css) [![Userscript version](https://img.shields.io/badge/userscript-v0.1.3-green)](https://lucka.moe/toolkit/ingress/Wayfarer-Dark-Mode.user.js)
 
 ## Usage
 Load [this CSS](https://lucka.moe/toolkit/ingress/wayfarer-dark.css) with:
@@ -30,13 +30,19 @@ If you use CSS with:
 
 ## Changelog
 ```markdown
-### [0.1.10] - 2019-11-14
+### [0.1.11] - 2020-03-24
 #### Changed
-- Support background color for .container
+- Support category selector (.suggestions-check label)
 ```
 
 <details><summary>Previous</summary>
 <p>
+
+```markdown
+### [0.1.10] - 2019-11-14
+#### Changed
+- Support background color for .container
+```
 
 ```markdown
 ### [0.1.9] - 2019-11-10
