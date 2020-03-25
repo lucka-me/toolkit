@@ -146,7 +146,7 @@ label::before,
 }
 
 .suggestions-check input[type="radio"]:checked + label {
-    background: #a50300 !important;
+    background: #d75734 !important;
 }
 
 /* Fix image ratio in nomination card */
