@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                              ver 0.1.11 */
+/* Licenced under MIT                                              ver 0.1.12 */
 /******************************************************************************/
 
 
@@ -140,7 +140,8 @@ label::before,
 .reset-map-icon::before,
 .category__arrow-element,
 .item-edit::before,
-.cancel-btn::before {
+.cancel-btn::before,
+.reset-categories-icon::before {
     filter: invert(1);
 }
 

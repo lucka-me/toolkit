@@ -30,13 +30,19 @@ If you use CSS with:
 
 ## Changelog
 ```markdown
-### [0.1.11] - 2020-03-24
-#### Changed
-- Support category selector (.suggestions-check label)
+### [0.1.12] - 2020-03-25
+#### Fixed
+- Color of back arrow in catrgory selector card
 ```
 
 <details><summary>Previous</summary>
 <p>
+
+```markdown
+### [0.1.11] - 2020-03-24
+#### Changed
+- Support category selector (.suggestions-check label)
+```
 
 ```markdown
 ### [0.1.10] - 2019-11-14
