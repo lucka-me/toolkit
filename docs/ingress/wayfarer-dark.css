@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                              ver 0.1.12 */
+/* Licenced under MIT                                              ver 0.1.13 */
 /******************************************************************************/
 
 
@@ -99,8 +99,8 @@ button[disabled] {
     background: none !important;
 }
 
-.selected > .star-gray,
-.star-red-orange {
+.five-star-rating__button--selected > .five-star-rating__star--gray,
+.five-star-rating__star--red-orange {
     color: #E47252 !important;
 }
 
