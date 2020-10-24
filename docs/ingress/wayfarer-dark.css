@@ -1,6 +1,6 @@
 /******************************************************************************/
 /* Dark Mode CSS for Niantic Wayfarer                             by lucka-me */
-/* Licenced under MIT                                              ver 0.1.13 */
+/* Licenced under MIT                                              ver 0.1.14 */
 /******************************************************************************/
 
 
@@ -29,7 +29,8 @@ body, h1, h2, h3, span, textarea,
 .settings-item .additional-description,
 .dropdown #simple-dropdown,
 #help-section-content h3 b,
-.categories-display-result span:not(:first-child)::before {
+.categories-display-result span:not(:first-child)::before,
+.dropdown .dropdown-menu {
     color: #ddd !important;
 }
 

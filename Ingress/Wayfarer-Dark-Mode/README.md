@@ -30,13 +30,16 @@ If you use CSS with:
 
 ## Changelog
 
-### [0.1.13] - 2020-10-22
+### [0.1.14] - 2020-10-24
 #### Changed
-- Support new stars style
-
+- Support dorpdown in submit button
 
 <details><summary>Previous</summary>
 <p>
+
+### [0.1.13] - 2020-10-22
+#### Changed
+- Support new stars style
 
 ### [0.1.12] - 2020-03-25
 #### Changed
