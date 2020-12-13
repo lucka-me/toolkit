@@ -3,6 +3,7 @@
 .lyrics-header {
     display: grid;
     gap: 2px;
+    align-items: baseline;
 }
 .lyrics-header > span {
     padding: 1px;
@@ -17,6 +18,7 @@
     display: grid;
     gap: 2px;
     min-height: 1em;
+    align-items: baseline;
 }
 .lyrics-content > div > span {
     white-space: nowrap;
