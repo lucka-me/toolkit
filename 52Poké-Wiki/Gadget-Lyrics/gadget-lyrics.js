@@ -2,6 +2,16 @@
     const lyricsBoxes = document.querySelectorAll('div.lyrics');
     if (lyricsBoxes.length < 1) return;
 
+    // Create a grid
+    function createGrid(className, hidden, innerHTML) {
+        const grid = document.createElement('span');
+        grid.className = className;
+        if (hidden) grid.style.display = 'none';
+        // Keep an empty span if there are no more lines
+        grid.innerHTML = innerHTML;
+        return grid;
+    };
+
     // Create a row with grid layout
     function createRow(name, gridTemplateColumns, items) {
         const row = document.createElement('div');
@@ -30,6 +40,8 @@
         // Collect data, title, className and splitted lyrics
         const datas = columns.map(function (column) {
             return {
+                className: column.className.replace('row', ''),
+                hidden: column.style.display === 'none',
                 title: column.firstElementChild.innerHTML,
                 titleClassName: column.firstElementChild.className,
                 lyrics: processLyricsText(column.lastElementChild.querySelector('p').innerHTML)
@@ -42,20 +54,15 @@
         // Generate rows
         for (var line = 0; line < lines; line++) {
             contents.push(createRow('', gridTemplateColumns, datas.map(function (data) {
-                const column = document.createElement('span');
                 // Keep an empty span if there are no more lines
-                column.innerHTML = data.lyrics.length < lines ? '' : data.lyrics[line];
-                return column;
+                return createGrid(data.className, data.hidden, data.lyrics.length < lines ? '' : data.lyrics[line]);
             })));
         }
         // Clear
         lyricsBox.innerHTML = '';
         lyricsBox.style.cssText = '';
         lyricsBox.append(createRow('lyrics-header', gridTemplateColumns, datas.map(function (data) {
-            const header = document.createElement('span');
-            header.className = data.titleClassName;
-            header.innerHTML = data.title;
-            return header;
+            return createGrid(data.titleClassName + ' ' + data.className, data.hidden, data.title);
         })));
         lyricsBox.append(createLyricsBox(contents));
     }
