@@ -1,0 +1,31 @@
+<div class="lyrics a-c roundy {{#if: {{{color|}}}|s-{{{color}}}| bg-{{{border|关都}}} bd-{{{outline|关都}}} }}" style="display:grid; grid-template-columns: repeat(auto-fit, minmax({{{colMinWidth|260px}}}, 1fr)); gap: 2px; padding: 2px;">
+
+<div style="display:flex; flex-flow: column nowrap;">
+<div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;">{{{lang1|日文}}}</div>
+<div class="roundy-6 bgwhite" style="padding:1px; flex-grow: 1; white-space: nowrap; overflow: auto;">
+-{<poem>{{{lyric1}}}</poem>}-
+</div>
+</div>
+
+<div style="display:flex; flex-flow: column nowrap;">
+<div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;">{{{lang2|中文}}}{{#if:{{{z2|}}}|{{tt|*|斜体字为暂译}}}}</div>
+<div class="roundy-6 bgwhite" style="padding:1px; flex-grow: 1; white-space: nowrap; overflow: auto;">
+<poem>{{{lyric2}}}</poem>
+</div>
+</div>
+{{#if: {{{lyric3|}}}|
+<div style="display:flex; flex-flow: column nowrap;">
+<div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;">{{{lang3}}}{{#if:{{{z3|}}}|{{tt|*|斜体字为暂译}}}}</div>
+<div class="roundy-6 bgwhite" style="padding:1px; flex-grow: 1; white-space: nowrap; overflow: auto;">
+<poem>{{{lyric3}}}</poem>
+</div>
+</div>
+|}}{{#if: {{{lyric4|}}}|
+<div style="display:flex; flex-flow: column nowrap;">
+<div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;">{{{lang4}}}{{#if:{{{z4|}}}|{{tt|*|斜体字为暂译}}}}</div>
+<div class="roundy-6 bgwhite" style="padding:1px; flex-grow: 1; white-space: nowrap; overflow: auto;">
+<poem>{{{lyric4}}}</poem>
+</div>
+</div>
+|}}
+</div>

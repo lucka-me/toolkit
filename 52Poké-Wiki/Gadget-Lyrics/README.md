@@ -1,5 +1,5 @@
 # 歌词小工具
-将[新歌词模板](https://wiki.52poke.com/index.php?title=User:卢卡/实验室/模板7 "实验室测试中")生成的歌词重新组织，转换为更加适合阅读和对照的形式。
+将[新歌词模板](./template.mediawiki)生成的歌词重新组织，转换为更加适合阅读和对照的形式。
 
 ## TODO
 - [ ] 测试并适配 Toggle
