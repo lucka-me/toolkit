@@ -1,0 +1,24 @@
+.lyrics { padding: 2px; }
+
+.lyrics-header {
+    display: grid;
+    gap: 2px;
+}
+.lyrics-header > span {
+    padding: 1px;
+    font-weight: bold;
+}
+
+.lyrics-content {
+    margin-top: 2px;
+    padding: 1px;
+}
+.lyrics-content > div {
+    display: grid;
+    gap: 2px;
+    min-height: 1em;
+}
+.lyrics-content > div > span {
+    white-space: nowrap;
+    overflow: auto;
+}
