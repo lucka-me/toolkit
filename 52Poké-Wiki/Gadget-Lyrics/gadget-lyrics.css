@@ -12,7 +12,7 @@
 
 .lyrics-content {
     margin-top: 2px;
-    padding: 1px;
+    padding: 0.5em 1px;
 }
 .lyrics-content > div {
     display: grid;
