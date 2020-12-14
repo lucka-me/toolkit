@@ -33,6 +33,9 @@
         return text.split(/<br\/?>/).map(function (line) { return line.trim(); });
     };
 
+    // Should trigger Toggle if it's used but already been loaded
+    var useToggle = false;
+
     for (var indexLyricBox = 0; indexLyricBox < lyricsBoxes.length; indexLyricBox++) {
         const lyricsBox = lyricsBoxes[indexLyricBox];
 
@@ -47,6 +50,8 @@
                 lyrics: processLyricsText(column.lastElementChild.querySelector('p').innerHTML)
             };
         });
+        // Used when more than two columns
+        useToggle = useToggle || datas.length > 2;
         // Find out maxnum of lyrics line count
         const lines = datas.reduce(function (prev, data) { return Math.max(prev, data.lyrics.length); }, 0);
         const gridTemplateColumns = lyricsBox.style.gridTemplateColumns;
@@ -65,5 +70,13 @@
             return createGrid(data.titleClassName + ' ' + data.className, data.hidden, data.title);
         })));
         lyricsBox.append(createLyricsBox(contents));
+    }
+
+    if (useToggle) {
+        // Triggers Toggle again
+        const gadgetToggle = mw.loader.moduleRegistry['ext.gadget.toggle'];
+        if (gadgetToggle && gadgetToggle.state === 'ready') {
+            $(gadgetToggle.script);
+        }
     }
 })();
