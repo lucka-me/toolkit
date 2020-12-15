@@ -8,8 +8,8 @@
 </div>
 
 <!-- row: A trick to keep flexbox layout through Toggle -->
-<div class="lyrics-col-2 row" style="flex-flow: column nowrap; margin: 0;">
-<div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;">{{{lang2|中文}}}{{#if:{{{z2|}}}|{{tt|*|斜体字为暂译}}}} {{#if:{{{lyric3|}}}|｜<span class="_toggler_hide-lyrics-col-2 _toggler_show-lyrics-col-3">{{{lang3}}}</span>}} {{#if:{{{lyric4|}}}|｜<span class="_toggler_hide-lyrics-col-2 _toggler_show-lyrics-col-4">{{{lang4}}}</span>}}</div>
+<div class="{{#if: {{{lyric3|}}}|lyrics-col-2}} row" style="flex-flow: column nowrap; margin: 0;">
+<div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;">{{{lang2|中文}}}{{#if:{{{z2|}}}|{{tt|*|斜体字为暂译}}}}{{#if:{{{lyric3|}}}|｜<span class="_toggler_hide-lyrics-col-2 _toggler_show-lyrics-col-3">{{{lang3}}}</span>}} {{#if:{{{lyric4|}}}|｜<span class="_toggler_hide-lyrics-col-2 _toggler_show-lyrics-col-4">{{{lang4}}}</span>}}</div>
 <div class="roundy-6 bgwhite" style="padding:1px; flex-grow: 1; white-space: nowrap; overflow: auto;">
 {{{lyric2}}}
 </div>
