@@ -40,13 +40,14 @@
         const lyricsBox = lyricsBoxes[indexLyricBox];
 
         const columns = Array.from(lyricsBox.querySelectorAll('.lyrics > div'));
-        // Collect data, title, className and splitted lyrics
+        // Collect data, header, className and splitted lyrics
         const datas = columns.map(function (column) {
+            const headerElement = column.firstElementChild;
             return {
                 className: column.className.replace('row', ''),
                 hidden: column.style.display === 'none',
-                title: column.firstElementChild.innerHTML,
-                titleClassName: column.firstElementChild.className,
+                header: headerElement.innerHTML,
+                headerClassName: headerElement.className,
                 lyrics: processLyricsText(column.lastElementChild.querySelector('p').innerHTML)
             };
         });
@@ -67,7 +68,7 @@
         lyricsBox.innerHTML = '';
         lyricsBox.style.cssText = '';
         lyricsBox.append(createRow('lyrics-header', gridTemplateColumns, datas.map(function (data) {
-            return createGrid(data.titleClassName + ' ' + data.className, data.hidden, data.title);
+            return createGrid(data.headerClassName + ' ' + data.className, data.hidden, data.header);
         })));
         lyricsBox.append(createLyricsBox(contents));
     }
@@ -76,6 +77,12 @@
         // Triggers Toggle again
         const gadgetToggle = mw.loader.moduleRegistry['ext.gadget.toggle'];
         if (gadgetToggle && gadgetToggle.state === 'ready') {
+            // Remove togglers
+            while (document.querySelector('a.toggler-link')) {
+                const toggler = document.querySelector('a.toggler-link');
+                toggler.parentElement.insertBefore(toggler.firstChild, toggler);
+                toggler.remove();
+            }
             $(gadgetToggle.script);
         }
     }
