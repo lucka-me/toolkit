@@ -4,15 +4,19 @@
     display: grid;
     gap: 2px;
     align-items: baseline;
+    overflow: auto;
 }
 .lyrics-header > span {
     padding: 1px;
     font-weight: bold;
+    white-space: nowrap;
+    overflow: auto;
 }
 
 .lyrics-content {
     margin-top: 2px;
     padding: 0.5em 1px;
+    overflow: auto;
 }
 .lyrics-content > div {
     display: grid;

@@ -67,7 +67,7 @@
         // Clear
         lyricsBox.innerHTML = '';
         lyricsBox.style.cssText = '';
-        lyricsBox.append(createRow('lyrics-header', gridTemplateColumns, datas.map(function (data) {
+        lyricsBox.append(createRow('lyrics-header roundy-6', gridTemplateColumns, datas.map(function (data) {
             return createGrid(data.headerClassName + ' ' + data.className, data.hidden, data.header);
         })));
         lyricsBox.append(createLyricsBox(contents));

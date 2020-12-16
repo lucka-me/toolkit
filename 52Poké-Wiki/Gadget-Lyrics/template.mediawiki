@@ -1,4 +1,4 @@
-<div class="lyrics a-c roundy {{#if: {{{color|}}}|s-{{{color}}}| bg-{{{border|关都}}} bd-{{{outline|关都}}} }}" style="display:grid; grid-template-columns: repeat(auto-fit, minmax({{{colMinWidth|260px}}}, 1fr)); gap: 2px; padding: 2px;">
+<div class="lyrics a-c roundy {{#if: {{{color|}}}|s-{{{color}}}| bg-{{{border|关都}}} bd-{{{outline|关都}}} }}" style="display:grid; grid-template-columns: repeat(auto-fit, minmax({{{colMinWidth|260px}}}, 1fr)); gap: 2px; padding: 2px; overflow: auto;">
 
 <div style="display:flex; flex-flow: column nowrap;">
 <div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;">{{{lang1|日文}}}</div>
@@ -23,7 +23,7 @@
 </div>
 |}}{{#if: {{{lyric4|}}}|
 <div class="lyrics-{{{name|}}}-col-4 row" style="display: none; flex-flow: column nowrap; margin: 0;">
-<div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;"><span class="_toggler_hide-lyrics-{{{name|}}}-col-4 _toggler_show-lyrics-{{{name|}}}-col-2">{{{lang2|中文}}}<span class="_toggler_hide-lyrics-{{{name|}}}-col-4 _toggler_show-lyrics-{{{name|}}}-col-3">{{{lang3}}}</span>｜</span>｜{{{lang4}}}{{#if:{{{z4|}}}|{{tt|*|斜体字为暂译}}}}</div>
+<div class="at-c roundy-6 bgl-{{{color|{{{border|关都}}}}}}" style="margin-bottom: 2px; padding:1px; font-weight:bold;"><span class="_toggler_hide-lyrics-{{{name|}}}-col-4 _toggler_show-lyrics-{{{name|}}}-col-2">{{{lang2|中文}}}</span>｜<span class="_toggler_hide-lyrics-{{{name|}}}-col-4 _toggler_show-lyrics-{{{name|}}}-col-3">{{{lang3}}}</span>｜{{{lang4}}}{{#if:{{{z4|}}}|{{tt|*|斜体字为暂译}}}}</div>
 <div class="roundy-6 bgwhite" style="padding:1px; flex-grow: 1; white-space: nowrap; overflow: auto;">
 {{{lyric4}}}
 </div>
