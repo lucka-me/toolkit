@@ -7,7 +7,7 @@
 | Property | Type | Description
 | :------- | :--- | :----------
 | `title` | `string` / `Regex` | 匹配标题后进行处理
-| `replaceList` | `Array<[string | Regex, string]>` | 字符串/正则表达式替换列表
+| `replaceList` | `Array<[string \| Regex, string]>` | 字符串/正则表达式替换列表
 | `procList` | `Array<(code: string) => string>` | 代码处理器列表
 | `minorEdit` | `boolean` | 是否勾选「小编辑」
 | `summary` | `string` | 编辑摘要
