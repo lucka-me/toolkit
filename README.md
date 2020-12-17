@@ -3,6 +3,7 @@ A collection of tools made by Lucka.
 
 ## Catalog
 - [神奇宝贝百科](/52Poké-Wiki/)
+  - [Beldum](/52Poké-Wiki/Beldum/)
   - [服饰列表生成器-SWSH](/52Poké-Wiki/ClothTableGenerator-SWSH/)
   - [服饰列表生成器-USUM](/52Poké-Wiki/ClothTableGenerator-USUM/)
   - [歌词小工具](/52Poké-Wiki/Gadget-Lyrics)
