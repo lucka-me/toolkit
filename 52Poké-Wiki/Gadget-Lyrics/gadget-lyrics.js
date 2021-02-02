@@ -61,7 +61,7 @@
         for (var line = 0; line < lines; line++) {
             contents.push(createRow('', gridTemplateColumns, datas.map(function (data) {
                 // Keep an empty span if there are no more lines
-                return createGrid(data.className, data.hidden, data.lyrics.length < lines ? '' : data.lyrics[line]);
+                return createGrid(data.className, data.hidden, line < data.lyrics.length ? data.lyrics[line] : '');
             })));
         }
         // Clear
