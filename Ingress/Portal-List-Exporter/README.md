@@ -3,7 +3,7 @@
 A simple IITC plugin to:
 
 1. Export portals as:
-    ```json
+    ```jsonc
     [
         {
             "guid": "GUID of Portal",
@@ -17,7 +17,7 @@ A simple IITC plugin to:
     ]
     ```
 2. Export keys in inventory (requires [Live Inventory Plugin](https://github.com/EisFrei/IngressLiveInventory)) as:
-    ```json
+    ```jsonc
     [
         "GUID of Portal",
         // ...
